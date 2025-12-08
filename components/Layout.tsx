@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, User as UserIcon, Facebook, Instagram, Youtube, Globe, ChevronDown } from 'lucide-react';
+import { Menu, X, Phone, User as UserIcon, Facebook, Instagram, Youtube, Globe, ChevronDown, Flame } from 'lucide-react';
 import { useContent, Language } from '../services/contentContext';
 import { UI_LABELS } from '../constants';
 import { EditableImage } from './Editable';
@@ -80,27 +80,43 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         {/* Navbar */}
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2">
-             {/* Admin Editable Logo */}
-             <div className="w-48 h-12 relative">
+             {/* Admin Editable Logo - Custom Design matching user image */}
+             <div className="w-auto h-14 relative flex items-center">
                {content['site_logo'] ? (
                  <EditableImage 
                     id="site_logo" 
                     alt="108WOW Logo" 
-                    className="w-full h-full object-contain object-left"
+                    className="w-auto h-full object-contain object-left max-w-[250px]"
                     defaultSrc=""
                   />
                ) : (
-                 <div className="flex items-center gap-2 group">
-                   <div className="w-10 h-10 bg-brand-lime rounded-lg flex items-center justify-center text-black font-black text-lg border-2 border-white transform -skew-x-12">
-                     108
+                 <div className="flex items-end gap-2 group cursor-pointer">
+                   {/* Torch Icon */}
+                   <div className="text-brand-lime transform -rotate-12 group-hover:rotate-0 transition duration-300">
+                     <Flame size={48} strokeWidth={2.5} fill="currentColor" className="drop-shadow-[0_0_8px_rgba(190,233,13,0.5)]" />
                    </div>
-                   <div className="flex flex-col">
-                      <span className="text-2xl font-black text-white italic tracking-tighter group-hover:text-brand-lime transition">WOW</span> 
-                      <span className="hidden sm:inline-block text-[10px] text-gray-400 font-normal tracking-widest uppercase">Sport & Activity Expert</span>
+                   
+                   {/* Text Group */}
+                   <div className="flex flex-col relative bottom-1">
+                      <div className="flex items-baseline">
+                        <span className="text-5xl font-black text-brand-lime italic tracking-tighter leading-none" style={{ fontFamily: 'Arial, sans-serif' }}>WOW</span>
+                        <div className="flex flex-col ml-1 items-start">
+                           <span className="text-[10px] text-brand-lime uppercase leading-none mb-0.5 tracking-wide">Powered by</span>
+                           <div className="flex items-center gap-0.5">
+                             <div className="w-4 h-4 rounded-full bg-brand-lime flex items-center justify-center">
+                               <span className="text-[8px] font-bold text-black">108</span>
+                             </div>
+                           </div>
+                        </div>
+                      </div>
+                      <span className="text-[10px] text-brand-lime font-medium tracking-[0.2em] uppercase leading-none mt-1">
+                        Sportsday & Activity Expert
+                      </span>
                    </div>
+
                    {/* Hidden editable image to allow upload if empty */}
                    {isAdmin && (
-                      <div className="absolute inset-0 opacity-0 hover:opacity-100 bg-black/50 flex items-center justify-center text-xs text-white cursor-pointer pointer-events-none">
+                      <div className="absolute inset-0 opacity-0 hover:opacity-100 bg-black/50 flex items-center justify-center text-xs text-white cursor-pointer pointer-events-none z-20">
                          <EditableImage id="site_logo" alt="Upload Logo" className="w-full h-full" defaultSrc=""/>
                       </div>
                    )}
@@ -177,8 +193,9 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         <div className="container mx-auto px-4 grid md:grid-cols-3 gap-12">
           <div>
             <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-               <div className="w-8 h-8 bg-brand-lime rounded-lg flex items-center justify-center text-black font-black text-sm shadow-sm">W</div>
-               <span className="italic">108WOW</span>
+               {/* Footer Logo Minimal */}
+               <Flame size={24} className="text-brand-lime" fill="currentColor"/>
+               <span className="italic text-brand-lime font-black">108WOW</span>
             </h3>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
               {language === 'th' 
