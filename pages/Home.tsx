@@ -2,8 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Trophy, PartyPopper, Gamepad2, CheckCircle } from 'lucide-react';
 import { EditableText, EditableImage } from '../components/Editable';
+import { useContent } from '../services/contentContext';
+import { UI_LABELS } from '../constants';
 
 export const Home: React.FC = () => {
+  const { language } = useContent();
+  const labels = UI_LABELS[language];
+  const suffix = language === 'en' ? '_en' : '';
+
   return (
     <div>
       {/* Hero Section */}
@@ -16,19 +22,19 @@ export const Home: React.FC = () => {
         />
         <div className="absolute inset-0 bg-black/50 z-10 flex flex-col justify-center items-center text-center px-4">
           <EditableText 
-            id="home_hero_title"
+            id={`home_hero_title${suffix}`}
             tag="h1"
             defaultText="สร้างปรากฏการณ์ความสนุกสุด WOW! ให้กับทุกอีเว้นท์ของคุณ"
             className="text-4xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg"
           />
           <EditableText 
-            id="home_hero_subtitle"
+            id={`home_hero_subtitle${suffix}`}
             tag="p"
             defaultText="ผู้เชี่ยวชาญด้านจัดกีฬาสี ปาร์ตี้ และกิจกรรมสร้างทีมสัมพันธ์ครบวงจร อันดับ 1"
             className="text-xl md:text-2xl text-gray-200 mb-8 max-w-2xl"
           />
           <Link to="/contact" className="bg-brand-orange hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full text-lg transition shadow-lg transform hover:scale-105">
-            ปรึกษาจัดงานฟรี!
+            {labels.consult_free}
           </Link>
         </div>
       </section>
@@ -37,13 +43,13 @@ export const Home: React.FC = () => {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4 text-center max-w-4xl">
           <EditableText 
-            id="home_intro_title"
+            id={`home_intro_title${suffix}`}
             tag="h2"
             defaultText="ยินดีต้อนรับสู่โลกแห่งกิจกรรม 108WOW"
             className="text-3xl font-bold text-brand-blue mb-6"
           />
           <EditableText 
-            id="home_intro_text"
+            id={`home_intro_text${suffix}`}
             tag="p"
             multiline
             defaultText="เราคือทีมงานมืออาชีพที่พร้อมเนรมิตงานกีฬาสีบริษัท..."
@@ -55,7 +61,7 @@ export const Home: React.FC = () => {
       {/* Services Highlight */}
       <section className="py-20 bg-brand-light">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">บริการของเรา</h2>
+          <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">{labels.services}</h2>
           <div className="grid md:grid-cols-3 gap-8">
             
             {/* Card 1 */}
@@ -67,9 +73,9 @@ export const Home: React.FC = () => {
                  </div>
               </div>
               <div className="p-6 flex-grow">
-                <h3 className="text-xl font-bold mb-2">Sport Day & Team Building</h3>
-                <p className="text-gray-600 mb-4">กีฬาสีสุดมันส์ เกมส์ฮาเฮ สร้างทีมเวิร์คที่แข็งแกร่ง</p>
-                <Link to="/services/sport-day" className="text-brand-blue font-bold hover:underline">อ่านเพิ่มเติม &rarr;</Link>
+                <h3 className="text-xl font-bold mb-2">{labels.sport_day}</h3>
+                <p className="text-gray-600 mb-4">{language === 'th' ? 'กีฬาสีสุดมันส์ เกมส์ฮาเฮ สร้างทีมเวิร์คที่แข็งแกร่ง' : 'Fun sports day, funny games, building strong teamwork.'}</p>
+                <Link to="/services/sport-day" className="text-brand-blue font-bold hover:underline">{labels.read_more} &rarr;</Link>
               </div>
             </div>
 
@@ -82,9 +88,9 @@ export const Home: React.FC = () => {
                  </div>
               </div>
               <div className="p-6 flex-grow">
-                <h3 className="text-xl font-bold mb-2">Party & Theme Events</h3>
-                <p className="text-gray-600 mb-4">งานเลี้ยงบริษัท ปาร์ตี้ธีมต่างๆ แสงสีเสียงจัดเต็ม</p>
-                <Link to="/services/party" className="text-brand-blue font-bold hover:underline">อ่านเพิ่มเติม &rarr;</Link>
+                <h3 className="text-xl font-bold mb-2">{labels.party}</h3>
+                <p className="text-gray-600 mb-4">{language === 'th' ? 'งานเลี้ยงบริษัท ปาร์ตี้ธีมต่างๆ แสงสีเสียงจัดเต็ม' : 'Corporate parties, various themes, full light and sound.'}</p>
+                <Link to="/services/party" className="text-brand-blue font-bold hover:underline">{labels.read_more} &rarr;</Link>
               </div>
             </div>
 
@@ -97,9 +103,9 @@ export const Home: React.FC = () => {
                  </div>
               </div>
               <div className="p-6 flex-grow">
-                <h3 className="text-xl font-bold mb-2">Equipment Rental</h3>
-                <p className="text-gray-600 mb-4">บริการให้เช่าเกมส์ยักษ์ ซุ้มเกมส์งานวัด และอุปกรณ์จัดงานครบครัน</p>
-                <Link to="/equipment" className="text-brand-blue font-bold hover:underline">อ่านเพิ่มเติม &rarr;</Link>
+                <h3 className="text-xl font-bold mb-2">{labels.rentals}</h3>
+                <p className="text-gray-600 mb-4">{language === 'th' ? 'บริการให้เช่าเกมส์ยักษ์ ซุ้มเกมส์งานวัด และอุปกรณ์จัดงานครบครัน' : 'Rental service for giant games, carnival booths, and event equipment.'}</p>
+                <Link to="/equipment" className="text-brand-blue font-bold hover:underline">{labels.read_more} &rarr;</Link>
               </div>
             </div>
 
@@ -110,13 +116,13 @@ export const Home: React.FC = () => {
       {/* Why Choose Us */}
       <section className="py-20 bg-brand-blue text-white">
         <div className="container mx-auto px-4">
-           <h2 className="text-3xl font-bold text-center mb-12">ทำไมต้องเลือก 108WOW?</h2>
+           <h2 className="text-3xl font-bold text-center mb-12">{labels.why_choose}</h2>
            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
               {[
-                { title: 'One-Stop Service', desc: 'ครบจบในที่เดียว ตั้งแต่วางแผนจนถึงวันงาน' },
-                { title: 'Creative & Fun', desc: 'รูปแบบเกมส์และกิจกรรมที่แปลกใหม่ ไม่จำเจ' },
-                { title: 'Safety First', desc: 'อุปกรณ์ได้มาตรฐาน และทีมงานดูแลความปลอดภัย' },
-                { title: 'Professional Team', desc: 'ทีมงานเชี่ยวชาญ ประสบการณ์สูง คุมงบประมาณได้' }
+                { title: 'One-Stop Service', desc: language === 'th' ? 'ครบจบในที่เดียว ตั้งแต่วางแผนจนถึงวันงาน' : 'Complete in one place, from planning to event day.' },
+                { title: 'Creative & Fun', desc: language === 'th' ? 'รูปแบบเกมส์และกิจกรรมที่แปลกใหม่ ไม่จำเจ' : 'Unique and creative games and activities.' },
+                { title: 'Safety First', desc: language === 'th' ? 'อุปกรณ์ได้มาตรฐาน และทีมงานดูแลความปลอดภัย' : 'Standard equipment and safety team.' },
+                { title: 'Professional Team', desc: language === 'th' ? 'ทีมงานเชี่ยวชาญ ประสบการณ์สูง คุมงบประมาณได้' : 'Experienced team, high expertise, budget control.' }
               ].map((item, index) => (
                 <div key={index} className="bg-white/10 p-6 rounded-lg backdrop-blur-sm border border-white/20">
                   <CheckCircle className="text-brand-yellow mb-4" size={32} />

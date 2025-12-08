@@ -2,15 +2,19 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { SiteContent, Project } from '../types';
 import { DEFAULT_CONTENT, MOCK_PROJECTS, GOOGLE_SCRIPT_URL } from '../constants';
 
+export type Language = 'th' | 'en';
+
 interface ContentContextType {
   content: SiteContent;
   projects: Project[];
   isAdmin: boolean;
   isLoading: boolean;
+  language: Language;
   login: (token: string) => void;
   logout: () => void;
   updateContent: (key: string, value: string) => Promise<void>;
-  updateProject: (project: Project) => Promise<void>; // Simplified for demo
+  updateProject: (project: Project) => Promise<void>;
+  switchLanguage: (lang: Language) => void;
 }
 
 const ContentContext = createContext<ContentContextType | undefined>(undefined);
@@ -20,6 +24,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [projects, setProjects] = useState<Project[]>(MOCK_PROJECTS);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [language, setLanguage] = useState<Language>('th');
 
   // Initial Fetch (Simulated if no URL provided)
   useEffect(() => {
@@ -64,6 +69,10 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     localStorage.removeItem('admin_token');
   };
 
+  const switchLanguage = (lang: Language) => {
+    setLanguage(lang);
+  };
+
   const updateContent = async (key: string, value: string) => {
     // Optimistic Update
     setContent(prev => ({ ...prev, [key]: value }));
@@ -87,7 +96,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   return (
-    <ContentContext.Provider value={{ content, projects, isAdmin, isLoading, login, logout, updateContent, updateProject }}>
+    <ContentContext.Provider value={{ content, projects, isAdmin, isLoading, login, logout, updateContent, updateProject, language, switchLanguage }}>
       {children}
     </ContentContext.Provider>
   );

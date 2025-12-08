@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useContent } from '../services/contentContext';
 import { EditableText, EditableImage } from '../components/Editable';
+import { UI_LABELS } from '../constants';
 
 export const Projects: React.FC = () => {
-  const { projects, updateProject, isAdmin } = useContent();
+  const { projects, updateProject, isAdmin, language } = useContent();
   const [filter, setFilter] = useState('All');
+  const labels = UI_LABELS[language];
 
   const categories = ['All', ...Array.from(new Set(projects.map(p => p.category)))];
   const filteredProjects = filter === 'All' ? projects : projects.filter(p => p.category === filter);
@@ -19,8 +21,8 @@ export const Projects: React.FC = () => {
   return (
     <div className="py-12 bg-gray-50">
       <div className="container mx-auto px-4">
-        <h1 className="text-4xl font-bold text-center mb-4 text-brand-blue">ผลงานที่ผ่านมา (Our Projects)</h1>
-        <p className="text-center text-gray-600 mb-12">ภาพความประทับใจและความสำเร็จจากลูกค้าของเรา</p>
+        <h1 className="text-4xl font-bold text-center mb-4 text-brand-blue">{labels.our_projects}</h1>
+        <p className="text-center text-gray-600 mb-12">{language === 'th' ? 'ภาพความประทับใจและความสำเร็จจากลูกค้าของเรา' : 'Impressive moments and success stories from our clients.'}</p>
 
         {/* Filter */}
         <div className="flex justify-center gap-4 mb-12 flex-wrap">

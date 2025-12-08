@@ -1,9 +1,14 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { EditableText, EditableImage } from '../components/Editable';
+import { useContent } from '../services/contentContext';
+import { UI_LABELS } from '../constants';
 
 export const Equipment: React.FC = () => {
   const { type } = useParams<{ type?: string }>();
+  const { language } = useContent();
+  const labels = UI_LABELS[language];
+  const suffix = language === 'en' ? '_en' : '';
   const isSpecific = !!type;
 
   return (
@@ -11,35 +16,35 @@ export const Equipment: React.FC = () => {
       <div className="container mx-auto px-4">
         {/* Breadcrumb */}
         <div className="text-sm text-gray-500 mb-8">
-          <Link to="/" className="hover:text-brand-orange">Home</Link> / 
-          <Link to="/equipment" className="hover:text-brand-orange"> Equipment</Link> 
+          <Link to="/" className="hover:text-brand-orange">{labels.home}</Link> / 
+          <Link to="/equipment" className="hover:text-brand-orange"> {labels.equipment}</Link> 
           {isSpecific && <span className="capitalize"> / {type?.replace('-', ' ')}</span>}
         </div>
 
         {!isSpecific ? (
           // General Equipment Landing
           <div>
-            <h1 className="text-4xl font-bold text-center mb-8 text-brand-blue">อุปกรณ์และเกมส์ (Equipment & Games)</h1>
+            <h1 className="text-4xl font-bold text-center mb-8 text-brand-blue">{labels.equipment}</h1>
             <p className="text-center text-gray-600 max-w-2xl mx-auto mb-12">
-              108WOW มีคลังอุปกรณ์เกมส์และอุปกรณ์จัดงานขนาดใหญ่ พร้อมให้บริการเช่าสำหรับออแกไนเซอร์ หรือบริษัทที่ต้องการจัดงานเอง
+              {language === 'th' ? '108WOW มีคลังอุปกรณ์เกมส์และอุปกรณ์จัดงานขนาดใหญ่ พร้อมให้บริการเช่า' : '108WOW has a large inventory of games and event equipment ready for rent.'}
             </p>
             <div className="grid gap-12">
               <EquipmentSection 
-                title="Sport & Games / อุปกรณ์กีฬาและเกมส์"
-                desc="เพิ่มสีสันให้งานกีฬาสีด้วยเกมส์ที่ไม่เหมือนใคร ทั้งเกมส์ลมยักษ์ และอุปกรณ์ Team Building"
+                title={labels.sport_games}
+                desc={language === 'th' ? "เพิ่มสีสันให้งานกีฬาสีด้วยเกมส์ที่ไม่เหมือนใคร" : "Add color to your sports day with unique games."}
                 imgId="img_eq_sport_landing"
                 link="/equipment/sport"
               />
               <EquipmentSection 
-                title="Booth & Fair Games / ซุ้มเกมส์งานวัด"
-                desc="บริการซุ้มเกมส์งานวัด และคาร์นิวัล สร้างบรรยากาศความสนุกแบบย้อนยุค"
+                title={labels.booth}
+                desc={language === 'th' ? "บริการซุ้มเกมส์งานวัด และคาร์นิวัล" : "Carnival and fun fair booth services."}
                 imgId="img_eq_booth_landing"
                 link="/equipment/booth"
                 reverse
               />
               <EquipmentSection 
-                title="Event Rentals / อุปกรณ์อีเว้นท์"
-                desc="ให้เช่าอุปกรณ์จัดงานอีเว้นท์ ระบบเสียง ไฟ เวที และโครงสร้าง"
+                title={labels.rentals}
+                desc={language === 'th' ? "ให้เช่าอุปกรณ์จัดงานอีเว้นท์ ระบบเสียง ไฟ เวที" : "Event equipment rental: Sound, Light, Stage."}
                 imgId="img_eq_rentals_landing"
                 link="/equipment/rentals"
               />
@@ -49,7 +54,7 @@ export const Equipment: React.FC = () => {
           // Specific Equipment Page
           <div>
             <EditableText 
-              id={`eq_${type}_title`} 
+              id={`eq_${type}_title${suffix}`} 
               tag="h1" 
               defaultText={
                 type === 'sport' ? "ให้เช่าอุปกรณ์กีฬาและเกมส์สร้างทีม" : 
@@ -70,7 +75,7 @@ export const Equipment: React.FC = () => {
               </div>
               <div>
                 <EditableText 
-                  id={`eq_${type}_content`}
+                  id={`eq_${type}_content${suffix}`}
                   tag="p"
                   multiline
                   defaultText={
@@ -84,23 +89,22 @@ export const Equipment: React.FC = () => {
                 <h3 className="text-2xl font-bold mb-4">Available Items</h3>
                 <ul className="space-y-3">
                   {type === 'sport' && [
-                    "Inflatable Games: สไลเดอร์ยักษ์, บ้านบอล, สนามมวยทะเล",
-                    "Team Building Props: อุปกรณ์เดินตัวหนอน, เกมส์ส่งแป้ง",
-                    "Funny Games: ชุดมาสคอตซูโม่, เกมส์ชนแหลก"
+                    "Inflatable Games",
+                    "Team Building Props",
+                    "Funny Games"
                   ].map((item, i) => <li key={i} className="bg-gray-100 p-2 rounded border-l-4 border-brand-orange">{item}</li>)}
 
                   {type === 'booth' && [
-                    "ซุ้มปาโป่ง, ซุ้มยิงปืนจุกน้ำปลา",
-                    "ซุ้มโยนห่วง, ซุ้มปากระป๋อง",
-                    "ซุ้มตักไข่พาโชค, สอยดาว",
-                    "บริการสายไหม ป๊อปคอร์น ไอศกรีมหลอด"
+                    "Carnival Games",
+                    "Shooting Gallery",
+                    "Food Stations"
                   ].map((item, i) => <li key={i} className="bg-gray-100 p-2 rounded border-l-4 border-brand-orange">{item}</li>)}
 
                   {type === 'rentals' && [
-                    "ระบบเสียง (Sound System) ชุดเล็ก/กลาง/ใหญ่",
-                    "ระบบไฟ (Lighting) ไฟย้อมบรรยากาศ, Moving Head",
-                    "เวที (Stage) และโครงสร้างทรัส (Truss)",
-                    "โต๊ะ เก้าอี้ เต็นท์ พัดลมไอน้ำ"
+                    "Sound System",
+                    "Lighting",
+                    "Stage & Truss",
+                    "Tents & Fans"
                   ].map((item, i) => <li key={i} className="bg-gray-100 p-2 rounded border-l-4 border-brand-orange">{item}</li>)}
                 </ul>
               </div>
@@ -112,17 +116,21 @@ export const Equipment: React.FC = () => {
   );
 };
 
-const EquipmentSection: React.FC<{title: string, desc: string, imgId: string, link: string, reverse?: boolean}> = ({ title, desc, imgId, link, reverse }) => (
-  <div className={`flex flex-col md:flex-row gap-8 items-center ${reverse ? 'md:flex-row-reverse' : ''}`}>
-    <div className="w-full md:w-1/2 h-[300px]">
-      <EditableImage id={imgId} defaultSrc="https://picsum.photos/600/400" alt={title} className="w-full h-full rounded-xl shadow-md object-cover" />
+const EquipmentSection: React.FC<{title: string, desc: string, imgId: string, link: string, reverse?: boolean}> = ({ title, desc, imgId, link, reverse }) => {
+  const { language } = useContent();
+  const labels = UI_LABELS[language];
+  return (
+    <div className={`flex flex-col md:flex-row gap-8 items-center ${reverse ? 'md:flex-row-reverse' : ''}`}>
+      <div className="w-full md:w-1/2 h-[300px]">
+        <EditableImage id={imgId} defaultSrc="https://picsum.photos/600/400" alt={title} className="w-full h-full rounded-xl shadow-md object-cover" />
+      </div>
+      <div className="w-full md:w-1/2">
+        <h2 className="text-3xl font-bold mb-4 text-gray-800">{title}</h2>
+        <p className="text-gray-600 mb-6 text-lg">{desc}</p>
+        <Link to={link} className="inline-block bg-white border-2 border-brand-orange text-brand-orange px-6 py-2 rounded-full font-bold hover:bg-brand-orange hover:text-white transition">
+          {labels.view_details}
+        </Link>
+      </div>
     </div>
-    <div className="w-full md:w-1/2">
-      <h2 className="text-3xl font-bold mb-4 text-gray-800">{title}</h2>
-      <p className="text-gray-600 mb-6 text-lg">{desc}</p>
-      <Link to={link} className="inline-block bg-white border-2 border-brand-orange text-brand-orange px-6 py-2 rounded-full font-bold hover:bg-brand-orange hover:text-white transition">
-        ดูรายละเอียด
-      </Link>
-    </div>
-  </div>
-);
+  );
+};

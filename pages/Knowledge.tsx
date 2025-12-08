@@ -1,13 +1,19 @@
 import React from 'react';
 import { BookOpen, ArrowRight } from 'lucide-react';
 import { EditableText, EditableImage } from '../components/Editable';
+import { useContent } from '../services/contentContext';
+import { UI_LABELS } from '../constants';
 
 export const Knowledge: React.FC = () => {
+  const { language } = useContent();
+  const suffix = language === 'en' ? '_en' : '';
+  const labels = UI_LABELS[language];
+
   return (
     <div className="py-12 bg-gray-50">
       <div className="container mx-auto px-4">
-        <h1 className="text-4xl font-bold text-center mb-4 text-brand-blue">เกร็ดความรู้ (Knowledge)</h1>
-        <p className="text-center text-gray-600 mb-12">บทความและสาระน่ารู้เกี่ยวกับการจัดกิจกรรม</p>
+        <h1 className="text-4xl font-bold text-center mb-4 text-brand-blue">{labels.knowledge}</h1>
+        <p className="text-center text-gray-600 mb-12">{language === 'th' ? 'บทความและสาระน่ารู้เกี่ยวกับการจัดกิจกรรม' : 'Articles and interesting facts about event organization.'}</p>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[1, 2, 3, 4].map((i) => (
@@ -26,7 +32,7 @@ export const Knowledge: React.FC = () => {
                   <span>ARTICLE</span>
                 </div>
                 <EditableText 
-                  id={`blog_title_${i}`}
+                  id={`blog_title_${i}${suffix}`}
                   tag="h3"
                   defaultText={
                     i === 1 ? "5 ธีมงานกีฬาสีสุดฮิต ปี 2024" :
@@ -37,14 +43,14 @@ export const Knowledge: React.FC = () => {
                   className="text-xl font-bold mb-3 text-gray-800"
                 />
                 <EditableText 
-                  id={`blog_excerpt_${i}`}
+                  id={`blog_excerpt_${i}${suffix}`}
                   tag="p"
                   multiline
-                  defaultText="เนื้อหาโดยย่อที่จะช่วยให้ผู้อ่านสนใจคลิกเข้ามาอ่านต่อ..."
+                  defaultText={language === 'th' ? "เนื้อหาโดยย่อที่จะช่วยให้ผู้อ่านสนใจคลิกเข้ามาอ่านต่อ..." : "Brief content to attract readers to click and read more..."}
                   className="text-gray-600 text-sm mb-4 flex-grow"
                 />
                 <button className="text-brand-blue font-bold flex items-center gap-1 hover:gap-2 transition-all self-start">
-                  อ่านต่อ <ArrowRight size={16} />
+                  {labels.read_more} <ArrowRight size={16} />
                 </button>
               </div>
             </div>
