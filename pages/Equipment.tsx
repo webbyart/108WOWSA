@@ -12,20 +12,20 @@ export const Equipment: React.FC = () => {
   const isSpecific = !!type;
 
   return (
-    <div className="py-12">
+    <div className="py-12 bg-brand-dark min-h-screen">
       <div className="container mx-auto px-4">
         {/* Breadcrumb */}
         <div className="text-sm text-gray-500 mb-8">
-          <Link to="/" className="hover:text-brand-orange">{labels.home}</Link> / 
-          <Link to="/equipment" className="hover:text-brand-orange"> {labels.equipment}</Link> 
+          <Link to="/" className="hover:text-brand-lime">{labels.home}</Link> / 
+          <Link to="/equipment" className="hover:text-brand-lime"> {labels.equipment}</Link> 
           {isSpecific && <span className="capitalize"> / {type?.replace('-', ' ')}</span>}
         </div>
 
         {!isSpecific ? (
           // General Equipment Landing
           <div>
-            <h1 className="text-4xl font-bold text-center mb-8 text-brand-blue">{labels.equipment}</h1>
-            <p className="text-center text-gray-600 max-w-2xl mx-auto mb-12">
+            <h1 className="text-4xl font-bold text-center mb-8 text-brand-lime">{labels.equipment}</h1>
+            <p className="text-center text-gray-400 max-w-2xl mx-auto mb-12">
               {language === 'th' ? '108WOW มีคลังอุปกรณ์เกมส์และอุปกรณ์จัดงานขนาดใหญ่ พร้อมให้บริการเช่า' : '108WOW has a large inventory of games and event equipment ready for rent.'}
             </p>
             <div className="grid gap-12">
@@ -61,7 +61,7 @@ export const Equipment: React.FC = () => {
                 type === 'booth' ? "บริการซุ้มเกมส์งานวัด และคาร์นิวัล" : 
                 "ให้เช่าอุปกรณ์จัดงานอีเว้นท์"
               }
-              className="text-4xl font-bold text-brand-blue mb-6"
+              className="text-4xl font-bold text-brand-lime mb-6"
             />
             
             <div className="grid md:grid-cols-2 gap-12 mb-12">
@@ -70,7 +70,7 @@ export const Equipment: React.FC = () => {
                   id={`img_eq_detail_${type}`}
                   defaultSrc={`https://picsum.photos/800/600?random=${type?.length}`}
                   alt={type || 'Equipment'}
-                  className="w-full h-full rounded-lg shadow-lg object-cover"
+                  className="w-full h-full rounded-lg shadow-lg object-cover border border-gray-700"
                 />
               </div>
               <div>
@@ -83,29 +83,29 @@ export const Equipment: React.FC = () => {
                      type === 'booth' ? "สร้างบรรยากาศความสนุกแบบย้อนยุค หรือสไตล์คาร์นิวัล เหมาะสำหรับงานปาร์ตี้ งานเปิดตัวสินค้า หรือกิจกรรมหน้างาน" :
                      "อุปกรณ์พื้นฐานที่จำเป็นสำหรับทุกงานอีเว้นท์ ระบบเสียง ไฟ เวที และโครงสร้างทรัส"
                   }
-                  className="text-lg text-gray-700 leading-relaxed mb-6"
+                  className="text-lg text-gray-300 leading-relaxed mb-6"
                 />
                 
-                <h3 className="text-2xl font-bold mb-4">Available Items</h3>
+                <h3 className="text-2xl font-bold mb-4 text-white">Available Items</h3>
                 <ul className="space-y-3">
                   {type === 'sport' && [
                     "Inflatable Games",
                     "Team Building Props",
                     "Funny Games"
-                  ].map((item, i) => <li key={i} className="bg-gray-100 p-2 rounded border-l-4 border-brand-orange">{item}</li>)}
+                  ].map((item, i) => <li key={i} className="bg-brand-light p-2 rounded border-l-4 border-brand-orange text-gray-300">{item}</li>)}
 
                   {type === 'booth' && [
                     "Carnival Games",
                     "Shooting Gallery",
                     "Food Stations"
-                  ].map((item, i) => <li key={i} className="bg-gray-100 p-2 rounded border-l-4 border-brand-orange">{item}</li>)}
+                  ].map((item, i) => <li key={i} className="bg-brand-light p-2 rounded border-l-4 border-brand-orange text-gray-300">{item}</li>)}
 
                   {type === 'rentals' && [
                     "Sound System",
                     "Lighting",
                     "Stage & Truss",
                     "Tents & Fans"
-                  ].map((item, i) => <li key={i} className="bg-gray-100 p-2 rounded border-l-4 border-brand-orange">{item}</li>)}
+                  ].map((item, i) => <li key={i} className="bg-brand-light p-2 rounded border-l-4 border-brand-orange text-gray-300">{item}</li>)}
                 </ul>
               </div>
             </div>
@@ -122,12 +122,12 @@ const EquipmentSection: React.FC<{title: string, desc: string, imgId: string, li
   return (
     <div className={`flex flex-col md:flex-row gap-8 items-center ${reverse ? 'md:flex-row-reverse' : ''}`}>
       <div className="w-full md:w-1/2 h-[300px]">
-        <EditableImage id={imgId} defaultSrc="https://picsum.photos/600/400" alt={title} className="w-full h-full rounded-xl shadow-md object-cover" />
+        <EditableImage id={imgId} defaultSrc="https://picsum.photos/600/400" alt={title} className="w-full h-full rounded-xl shadow-md object-cover border border-gray-700" />
       </div>
       <div className="w-full md:w-1/2">
-        <h2 className="text-3xl font-bold mb-4 text-gray-800">{title}</h2>
-        <p className="text-gray-600 mb-6 text-lg">{desc}</p>
-        <Link to={link} className="inline-block bg-white border-2 border-brand-orange text-brand-orange px-6 py-2 rounded-full font-bold hover:bg-brand-orange hover:text-white transition">
+        <h2 className="text-3xl font-bold mb-4 text-white">{title}</h2>
+        <p className="text-gray-400 mb-6 text-lg">{desc}</p>
+        <Link to={link} className="inline-block bg-transparent border-2 border-brand-lime text-brand-lime px-6 py-2 rounded-full font-bold hover:bg-brand-lime hover:text-black transition">
           {labels.view_details}
         </Link>
       </div>

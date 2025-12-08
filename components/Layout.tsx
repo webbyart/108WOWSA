@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, User as UserIcon, Facebook, Instagram, Youtube, Globe } from 'lucide-react';
+import { Menu, X, Phone, User as UserIcon, Facebook, Instagram, Youtube, Globe, ChevronDown } from 'lucide-react';
 import { useContent, Language } from '../services/contentContext';
 import { UI_LABELS } from '../constants';
+import { EditableImage } from './Editable';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -10,144 +11,210 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   const location = useLocation();
   const labels = UI_LABELS[language];
 
-  const isActive = (path: string) => location.pathname === path ? 'text-brand-orange font-bold' : 'text-gray-700 hover:text-brand-orange';
-
-  const toggleLanguage = () => {
-    switchLanguage(language === 'th' ? 'en' : 'th');
-  };
+  // Updated logic for Dark Theme Navigation
+  const isActive = (path: string) => location.pathname === path 
+    ? 'text-brand-lime font-bold border-b-2 border-brand-lime' 
+    : 'text-gray-300 hover:text-brand-lime transition-colors duration-200';
 
   return (
-    <div className="min-h-screen flex flex-col font-sans">
+    <div className="min-h-screen flex flex-col font-sans bg-brand-dark text-gray-100">
       {/* Admin Bar */}
       {isAdmin && (
-        <div className="bg-gray-800 text-white text-xs py-1 px-4 flex justify-between items-center sticky top-0 z-50">
+        <div className="bg-brand-lime text-black text-xs py-1 px-4 flex justify-between items-center sticky top-0 z-50 font-bold">
           <span>{labels.admin_mode}</span>
-          <button onClick={logout} className="underline hover:text-brand-yellow">{labels.logout}</button>
+          <button onClick={logout} className="underline hover:text-white">{labels.logout}</button>
         </div>
       )}
 
       {/* Header */}
-      <header className="bg-white shadow-md sticky top-0 z-40">
-        {/* Top Bar */}
-        <div className="bg-brand-blue text-white py-1">
-          <div className="container mx-auto px-4 flex justify-end items-center text-sm gap-4">
-            <div className="flex items-center gap-1">
-              <Phone size={14} />
-              <span>{content['contact_phone'] || '02-XXX-XXXX'}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span>Line: {content['contact_line'] || '@108wow'}</span>
+      <header className="bg-brand-dark shadow-md sticky top-0 z-40 border-b border-gray-800">
+        {/* Top Bar - Black/Dark with Lime Accents */}
+        <div className="bg-black py-2 border-b border-gray-800">
+          <div className="container mx-auto px-4 flex flex-wrap justify-between md:justify-end items-center text-sm gap-4 text-gray-400">
+            
+            <div className="flex items-center gap-4 mr-auto md:mr-0">
+               <div className="flex items-center gap-1 hover:text-brand-lime transition">
+                <Phone size={14} className="text-brand-lime" />
+                <span>{content['contact_phone'] || '02-XXX-XXXX'}</span>
+              </div>
+              <div className="hidden sm:flex items-center gap-1 hover:text-brand-lime transition">
+                <span className="text-brand-lime font-bold">Line:</span>
+                <span>{content['contact_line'] || '@108wow'}</span>
+              </div>
             </div>
             
-            {/* Language Switcher */}
-            <button onClick={toggleLanguage} className="flex items-center gap-1 hover:text-brand-yellow font-bold border border-white/30 px-2 rounded">
-              <Globe size={14} />
-              <span>{language.toUpperCase()}</span>
-            </button>
+            <div className="flex items-center gap-3">
+              {/* Language Switcher Dropdown */}
+              <div className="relative group z-50">
+                <button className="flex items-center gap-1 hover:text-brand-lime px-2 py-0.5 rounded transition font-semibold">
+                  <Globe size={14} />
+                  <span>{language === 'th' ? 'TH' : 'EN'}</span>
+                  <ChevronDown size={12} />
+                </button>
+                <div className="absolute right-0 top-full mt-1 bg-brand-light shadow-xl rounded-lg overflow-hidden hidden group-hover:block border border-gray-700 min-w-[120px]">
+                  <button 
+                    onClick={() => switchLanguage('th')} 
+                    className={`block w-full text-left px-4 py-2 text-sm hover:bg-gray-700 text-gray-200 ${language === 'th' ? 'font-bold text-brand-lime' : ''}`}
+                  >
+                    ภาษาไทย
+                  </button>
+                  <button 
+                    onClick={() => switchLanguage('en')} 
+                    className={`block w-full text-left px-4 py-2 text-sm hover:bg-gray-700 text-gray-200 ${language === 'en' ? 'font-bold text-brand-lime' : ''}`}
+                  >
+                    English
+                  </button>
+                </div>
+              </div>
 
-            <Link to="/admin" className="flex items-center gap-1 hover:text-brand-yellow">
-              <UserIcon size={14} />
-              <span>{isAdmin ? labels.logout : labels.login}</span>
-            </Link>
+              <div className="h-4 w-px bg-gray-700"></div>
+
+              <Link to="/admin" className="flex items-center gap-1 hover:text-brand-lime transition">
+                <UserIcon size={14} />
+                <span>{isAdmin ? labels.logout : labels.login}</span>
+              </Link>
+            </div>
           </div>
         </div>
 
         {/* Navbar */}
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <Link to="/" className="text-2xl font-bold text-brand-orange flex items-center">
-             <span className="text-brand-blue mr-1">108WOW</span> <span className="hidden sm:inline">Sport & Activity</span>
+          <Link to="/" className="flex items-center gap-2">
+             {/* Admin Editable Logo */}
+             <div className="w-48 h-12 relative">
+               {content['site_logo'] ? (
+                 <EditableImage 
+                    id="site_logo" 
+                    alt="108WOW Logo" 
+                    className="w-full h-full object-contain object-left"
+                    defaultSrc=""
+                  />
+               ) : (
+                 <div className="flex items-center gap-2 group">
+                   <div className="w-10 h-10 bg-brand-lime rounded-lg flex items-center justify-center text-black font-black text-lg border-2 border-white transform -skew-x-12">
+                     108
+                   </div>
+                   <div className="flex flex-col">
+                      <span className="text-2xl font-black text-white italic tracking-tighter group-hover:text-brand-lime transition">WOW</span> 
+                      <span className="hidden sm:inline-block text-[10px] text-gray-400 font-normal tracking-widest uppercase">Sport & Activity Expert</span>
+                   </div>
+                   {/* Hidden editable image to allow upload if empty */}
+                   {isAdmin && (
+                      <div className="absolute inset-0 opacity-0 hover:opacity-100 bg-black/50 flex items-center justify-center text-xs text-white cursor-pointer pointer-events-none">
+                         <EditableImage id="site_logo" alt="Upload Logo" className="w-full h-full" defaultSrc=""/>
+                      </div>
+                   )}
+                 </div>
+               )}
+             </div>
           </Link>
 
           {/* Desktop Menu */}
-          <nav className="hidden md:flex gap-6 items-center">
+          <nav className="hidden md:flex gap-8 items-center font-medium">
             <Link to="/" className={isActive('/')}>{labels.home}</Link>
             
-            <div className="relative group cursor-pointer">
-              <span className={`flex items-center gap-1 ${location.pathname.includes('/services') ? 'text-brand-orange font-bold' : 'text-gray-700'}`}>
-                {labels.services}
+            <div className="relative group cursor-pointer py-4">
+              <span className={`flex items-center gap-1 ${location.pathname.includes('/services') ? 'text-brand-lime font-bold' : 'text-gray-300 hover:text-brand-lime'}`}>
+                {labels.services} <ChevronDown size={14}/>
               </span>
-              <div className="absolute left-0 mt-2 w-48 bg-white shadow-xl rounded-md overflow-hidden hidden group-hover:block border-t-2 border-brand-orange">
-                <Link to="/services" className="block px-4 py-2 hover:bg-gray-50 text-sm">{labels.all_services}</Link>
-                <Link to="/services/sport-day" className="block px-4 py-2 hover:bg-gray-50 text-sm">{labels.sport_day}</Link>
-                <Link to="/services/party" className="block px-4 py-2 hover:bg-gray-50 text-sm">{labels.party}</Link>
-                <Link to="/services/management" className="block px-4 py-2 hover:bg-gray-50 text-sm">{labels.management}</Link>
+              <div className="absolute left-0 top-full mt-0 w-56 bg-brand-light shadow-xl rounded-b-xl overflow-hidden hidden group-hover:block border-t-2 border-brand-lime z-50">
+                <Link to="/services" className="block px-4 py-3 hover:bg-gray-700 text-sm text-gray-200 border-b border-gray-700">{labels.all_services}</Link>
+                <Link to="/services/sport-day" className="block px-4 py-3 hover:bg-gray-700 text-sm text-gray-200 border-b border-gray-700">{labels.sport_day}</Link>
+                <Link to="/services/party" className="block px-4 py-3 hover:bg-gray-700 text-sm text-gray-200 border-b border-gray-700">{labels.party}</Link>
+                <Link to="/services/management" className="block px-4 py-3 hover:bg-gray-700 text-sm text-gray-200">{labels.management}</Link>
               </div>
             </div>
 
-            <div className="relative group cursor-pointer">
-              <span className={`flex items-center gap-1 ${location.pathname.includes('/equipment') ? 'text-brand-orange font-bold' : 'text-gray-700'}`}>
-                {labels.equipment}
+            <div className="relative group cursor-pointer py-4">
+              <span className={`flex items-center gap-1 ${location.pathname.includes('/equipment') ? 'text-brand-lime font-bold' : 'text-gray-300 hover:text-brand-lime'}`}>
+                {labels.equipment} <ChevronDown size={14}/>
               </span>
-              <div className="absolute left-0 mt-2 w-48 bg-white shadow-xl rounded-md overflow-hidden hidden group-hover:block border-t-2 border-brand-orange">
-                <Link to="/equipment" className="block px-4 py-2 hover:bg-gray-50 text-sm">{labels.all_equipment}</Link>
-                <Link to="/equipment/sport" className="block px-4 py-2 hover:bg-gray-50 text-sm">{labels.sport_games}</Link>
-                <Link to="/equipment/booth" className="block px-4 py-2 hover:bg-gray-50 text-sm">{labels.booth}</Link>
-                <Link to="/equipment/rentals" className="block px-4 py-2 hover:bg-gray-50 text-sm">{labels.rentals}</Link>
+              <div className="absolute left-0 top-full mt-0 w-56 bg-brand-light shadow-xl rounded-b-xl overflow-hidden hidden group-hover:block border-t-2 border-brand-lime z-50">
+                <Link to="/equipment" className="block px-4 py-3 hover:bg-gray-700 text-sm text-gray-200 border-b border-gray-700">{labels.all_equipment}</Link>
+                <Link to="/equipment/sport" className="block px-4 py-3 hover:bg-gray-700 text-sm text-gray-200 border-b border-gray-700">{labels.sport_games}</Link>
+                <Link to="/equipment/booth" className="block px-4 py-3 hover:bg-gray-700 text-sm text-gray-200 border-b border-gray-700">{labels.booth}</Link>
+                <Link to="/equipment/rentals" className="block px-4 py-3 hover:bg-gray-700 text-sm text-gray-200">{labels.rentals}</Link>
               </div>
             </div>
 
             <Link to="/projects" className={isActive('/projects')}>{labels.projects}</Link>
             <Link to="/about" className={isActive('/about')}>{labels.about}</Link>
             <Link to="/knowledge" className={isActive('/knowledge')}>{labels.knowledge}</Link>
-            <Link to="/contact" className={`px-4 py-2 bg-brand-orange text-white rounded-full hover:bg-orange-600 transition ${location.pathname === '/contact' ? 'ring-2 ring-offset-1 ring-brand-orange' : ''}`}>{labels.contact}</Link>
+            <Link to="/contact" className={`px-6 py-2 bg-brand-lime text-black font-bold rounded-full hover:bg-white hover:text-brand-lime transition shadow-md hover:shadow-lg ${location.pathname === '/contact' ? 'ring-2 ring-offset-2 ring-offset-brand-dark ring-brand-lime' : ''}`}>{labels.contact}</Link>
           </nav>
 
           {/* Mobile Toggle */}
-          <button className="md:hidden text-gray-700" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          <button className="md:hidden text-gray-300 hover:text-brand-lime" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-white border-t p-4 flex flex-col gap-4">
-            <Link to="/" onClick={() => setIsMenuOpen(false)}>{labels.home}</Link>
-            <Link to="/services" onClick={() => setIsMenuOpen(false)}>{labels.services}</Link>
-            <Link to="/equipment" onClick={() => setIsMenuOpen(false)}>{labels.equipment}</Link>
-            <Link to="/projects" onClick={() => setIsMenuOpen(false)}>{labels.projects}</Link>
-            <Link to="/about" onClick={() => setIsMenuOpen(false)}>{labels.about}</Link>
-            <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="text-brand-orange font-bold">{labels.contact}</Link>
+          <div className="md:hidden bg-brand-light border-t border-gray-700 p-4 flex flex-col gap-4 shadow-inner">
+            <Link to="/" onClick={() => setIsMenuOpen(false)} className="py-2 text-gray-300">{labels.home}</Link>
+            <Link to="/services" onClick={() => setIsMenuOpen(false)} className="py-2 text-gray-300">{labels.services}</Link>
+            <Link to="/equipment" onClick={() => setIsMenuOpen(false)} className="py-2 text-gray-300">{labels.equipment}</Link>
+            <Link to="/projects" onClick={() => setIsMenuOpen(false)} className="py-2 text-gray-300">{labels.projects}</Link>
+            <Link to="/about" onClick={() => setIsMenuOpen(false)} className="py-2 text-gray-300">{labels.about}</Link>
+            <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="py-2 text-brand-lime font-bold">{labels.contact}</Link>
+            {/* Mobile Language Switcher */}
+            <div className="flex gap-4 py-2 border-t border-gray-700 pt-4">
+              <button onClick={() => switchLanguage('th')} className={`text-sm ${language === 'th' ? 'text-brand-lime font-bold' : 'text-gray-500'}`}>ภาษาไทย</button>
+              <button onClick={() => switchLanguage('en')} className={`text-sm ${language === 'en' ? 'text-brand-lime font-bold' : 'text-gray-500'}`}>English</button>
+            </div>
           </div>
         )}
       </header>
 
       {/* Main Content */}
-      <main className="flex-grow bg-gray-50">
+      <main className="flex-grow">
         {children}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white pt-12 pb-6">
-        <div className="container mx-auto px-4 grid md:grid-cols-3 gap-8">
+      {/* Footer - Dark Theme */}
+      <footer className="bg-black text-white pt-16 pb-8 border-t border-gray-800">
+        <div className="container mx-auto px-4 grid md:grid-cols-3 gap-12">
           <div>
-            <h3 className="text-xl font-bold text-brand-orange mb-4">108WOW</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">
+            <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+               <div className="w-8 h-8 bg-brand-lime rounded-lg flex items-center justify-center text-black font-black text-sm shadow-sm">W</div>
+               <span className="italic">108WOW</span>
+            </h3>
+            <p className="text-gray-400 text-sm leading-relaxed mb-6">
               {language === 'th' 
                ? 'ผู้เชี่ยวชาญด้านจัดกีฬาสี ปาร์ตี้ และกิจกรรมสร้างทีมสัมพันธ์ครบวงจร มุ่งมั่นสร้างความสุขและรอยยิ้มผ่านกิจกรรมคุณภาพ'
                : 'The expert in Sport Days, Parties, and Team Building activities. Committed to creating happiness and smiles through quality events.'}
             </p>
           </div>
           <div>
-            <h4 className="text-lg font-bold mb-4">{labels.quick_links}</h4>
-            <ul className="text-gray-400 text-sm space-y-2">
-              <li><Link to="/services" className="hover:text-white">{labels.services}</Link></li>
-              <li><Link to="/equipment" className="hover:text-white">{labels.equipment}</Link></li>
-              <li><Link to="/projects" className="hover:text-white">{labels.our_projects}</Link></li>
-              <li><Link to="/contact" className="hover:text-white">{labels.contact}</Link></li>
+            <h4 className="text-lg font-bold mb-6 text-brand-lime">{labels.quick_links}</h4>
+            <ul className="text-gray-400 text-sm space-y-3">
+              <li><Link to="/services" className="hover:text-brand-lime transition flex items-center gap-2"><span className="w-1 h-1 bg-brand-lime rounded-full"></span>{labels.services}</Link></li>
+              <li><Link to="/equipment" className="hover:text-brand-lime transition flex items-center gap-2"><span className="w-1 h-1 bg-brand-lime rounded-full"></span>{labels.equipment}</Link></li>
+              <li><Link to="/projects" className="hover:text-brand-lime transition flex items-center gap-2"><span className="w-1 h-1 bg-brand-lime rounded-full"></span>{labels.our_projects}</Link></li>
+              <li><Link to="/contact" className="hover:text-brand-lime transition flex items-center gap-2"><span className="w-1 h-1 bg-brand-lime rounded-full"></span>{labels.contact}</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="text-lg font-bold mb-4">{labels.connect_us}</h4>
-            <div className="flex gap-4 mb-4">
-              <a href="#" className="bg-gray-800 p-2 rounded-full hover:bg-brand-blue"><Facebook size={20} /></a>
-              <a href="#" className="bg-gray-800 p-2 rounded-full hover:bg-pink-600"><Instagram size={20} /></a>
-              <a href="#" className="bg-gray-800 p-2 rounded-full hover:bg-red-600"><Youtube size={20} /></a>
+            <h4 className="text-lg font-bold mb-6 text-brand-lime">{labels.connect_us}</h4>
+            <div className="flex gap-4 mb-6">
+              <a href="#" className="bg-gray-800 p-2.5 rounded-full hover:bg-brand-lime hover:text-black transition text-gray-300"><Facebook size={20} /></a>
+              <a href="#" className="bg-gray-800 p-2.5 rounded-full hover:bg-brand-lime hover:text-black transition text-gray-300"><Instagram size={20} /></a>
+              <a href="#" className="bg-gray-800 p-2.5 rounded-full hover:bg-brand-lime hover:text-black transition text-gray-300"><Youtube size={20} /></a>
+              <a href="#" className="bg-gray-800 p-2.5 rounded-full hover:bg-brand-lime hover:text-black transition text-gray-300 flex items-center justify-center">
+                {/* TikTok SVG Icon */}
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                </svg>
+              </a>
             </div>
-            <p className="text-gray-400 text-sm">Tel: {content['contact_phone']}</p>
-            <p className="text-gray-400 text-sm">Line: {content['contact_line']}</p>
+            <div className="space-y-2">
+              <p className="text-gray-400 text-sm flex items-center gap-2"><Phone size={14} className="text-brand-lime"/> {content['contact_phone']}</p>
+              <p className="text-gray-400 text-sm flex items-center gap-2"><span className="text-black font-bold text-xs bg-brand-lime px-1 rounded">L</span> {content['contact_line']}</p>
+            </div>
           </div>
         </div>
-        <div className="container mx-auto px-4 mt-8 pt-8 border-t border-gray-800 text-center text-gray-500 text-sm">
+        <div className="container mx-auto px-4 mt-12 pt-8 border-t border-gray-800 text-center text-gray-500 text-sm">
           &copy; 2024 108WOW Sport Day & Activity Expert. {labels.rights}
         </div>
       </footer>

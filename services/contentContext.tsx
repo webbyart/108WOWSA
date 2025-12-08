@@ -14,6 +14,7 @@ interface ContentContextType {
   logout: () => void;
   updateContent: (key: string, value: string) => Promise<void>;
   updateProject: (project: Project) => Promise<void>;
+  addProject: (project: Project) => Promise<void>;
   switchLanguage: (lang: Language) => void;
 }
 
@@ -91,12 +92,16 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const updateProject = async (project: Project) => {
-    // Simplified: Just local state update for this demo as GAS implementation for array is complex
     setProjects(prev => prev.map(p => p.id === project.id ? project : p));
   };
 
+  const addProject = async (project: Project) => {
+    setProjects(prev => [project, ...prev]);
+    // In a real app, you would POST to the backend here
+  };
+
   return (
-    <ContentContext.Provider value={{ content, projects, isAdmin, isLoading, login, logout, updateContent, updateProject, language, switchLanguage }}>
+    <ContentContext.Provider value={{ content, projects, isAdmin, isLoading, login, logout, updateContent, updateProject, addProject, language, switchLanguage }}>
       {children}
     </ContentContext.Provider>
   );

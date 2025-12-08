@@ -9,7 +9,7 @@ export const About: React.FC = () => {
   const labels = UI_LABELS[language];
 
   return (
-    <div className="py-12 bg-white">
+    <div className="py-12 bg-brand-dark min-h-screen">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-16">
@@ -17,7 +17,7 @@ export const About: React.FC = () => {
             id={`about_headline${suffix}`}
             tag="h1"
             defaultText="รู้จักกับทีมงาน 108WOW"
-            className="text-4xl font-bold text-brand-blue mb-4"
+            className="text-4xl font-bold text-brand-lime mb-4"
           />
           <div className="w-24 h-1 bg-brand-orange mx-auto"></div>
         </div>
@@ -29,7 +29,7 @@ export const About: React.FC = () => {
               id="img_about_main" 
               defaultSrc="https://picsum.photos/800/600?grayscale" 
               alt="Our Team" 
-              className="rounded-xl shadow-2xl"
+              className="rounded-xl shadow-2xl border border-gray-700"
             />
           </div>
           <div>
@@ -40,7 +40,7 @@ export const About: React.FC = () => {
                 tag="p"
                 multiline
                 defaultText="ประวัติความเป็นมาสั้นๆ ก่อตั้งขึ้นจากความหลงใหลในการสร้างความสุขและรอยยิ้มผ่านกิจกรรม..."
-                className="text-gray-600 leading-relaxed"
+                className="text-gray-300 leading-relaxed"
               />
             </div>
             <div>
@@ -50,19 +50,19 @@ export const About: React.FC = () => {
                 tag="p"
                 multiline
                 defaultText="มุ่งมั่นที่จะเป็นผู้นำด้านการจัดกิจกรรม Sport Day และ Event ที่สร้างสรรค์ ปลอดภัย และคุ้มค่าที่สุดสำหรับลูกค้า"
-                className="text-gray-600 leading-relaxed"
+                className="text-gray-300 leading-relaxed"
               />
             </div>
           </div>
         </div>
 
         {/* Team Section */}
-        <div className="bg-gray-50 p-12 rounded-2xl">
-          <h2 className="text-3xl font-bold text-center mb-12">{language === 'th' ? 'ทีมงานมืออาชีพของเรา' : 'Our Professional Team'}</h2>
+        <div className="bg-brand-light p-12 rounded-2xl border border-gray-700">
+          <h2 className="text-3xl font-bold text-center mb-12 text-white">{language === 'th' ? 'ทีมงานมืออาชีพของเรา' : 'Our Professional Team'}</h2>
           <div className="grid md:grid-cols-3 gap-8">
             {[1, 2, 3].map((i) => (
               <div key={i} className="text-center">
-                <div className="w-48 h-48 mx-auto rounded-full overflow-hidden mb-4 border-4 border-white shadow-lg">
+                <div className="w-48 h-48 mx-auto rounded-full overflow-hidden mb-4 border-4 border-brand-lime shadow-lg">
                   <EditableImage 
                     id={`img_team_${i}`}
                     defaultSrc={`https://i.pravatar.cc/300?img=${i + 10}`} 
@@ -74,7 +74,7 @@ export const About: React.FC = () => {
                   id={`team_name_${i}${suffix}`}
                   tag="h3"
                   defaultText={language === 'th' ? "ชื่อทีมงาน" : "Name"}
-                  className="font-bold text-xl text-gray-800"
+                  className="font-bold text-xl text-white"
                 />
                 <EditableText 
                   id={`team_role_${i}${suffix}`}

@@ -97,6 +97,9 @@ export const MOCK_PROJECTS: Project[] = [
 ];
 
 export const DEFAULT_CONTENT: SiteContent = {
+  // Global
+  'site_logo': '',
+  
   // Header & Footer
   'contact_phone': '089-123-4567',
   'contact_line': '@108wow',
@@ -115,8 +118,12 @@ export const DEFAULT_CONTENT: SiteContent = {
   'home_intro_title_en': 'Welcome to the World of 108WOW Activities',
   'home_intro_text_en': 'We are a professional team ready to transform your corporate sport days, parties, and team building activities into more than just events. We create memorable experiences, unity, and smiles with modern, safe equipment and a team that cares about every detail.',
 
-  // REALISTIC IMAGES (Unsplash) - Shared across languages
-  'img_hero_main': 'https://images.unsplash.com/photo-1472653431158-6364773b2a56?q=80&w=1920&auto=format&fit=crop',
+  // REALISTIC IMAGES (Unsplash)
+  'hero_slider_images': JSON.stringify([
+    'https://images.unsplash.com/photo-1472653431158-6364773b2a56?q=80&w=1920&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1561484930-998b6a7b22e8?q=80&w=1920&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1920&auto=format&fit=crop'
+  ]),
   'img_service_sport': 'https://images.unsplash.com/photo-1526676037777-05a232554f77?q=80&w=800&auto=format&fit=crop',
   'img_service_party': 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=800&auto=format&fit=crop',
   'img_service_equip': 'https://images.unsplash.com/photo-1563299796-b729d0af54a5?q=80&w=800&auto=format&fit=crop',
