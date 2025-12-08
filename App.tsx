@@ -7,11 +7,9 @@ import { Services } from './pages/Services';
 import { Projects } from './pages/Projects';
 import { Contact } from './pages/Contact';
 import { Admin } from './pages/Admin';
-
-// Placeholder for Equipment page which shares similar structure to Services
-const Equipment = () => <div className="py-20 text-center text-2xl font-bold text-gray-500">Equipment Catalog Coming Soon (Use Services Template)</div>;
-const About = () => <div className="py-20 text-center text-2xl font-bold text-gray-500">About Page Coming Soon</div>;
-const Knowledge = () => <div className="py-20 text-center text-2xl font-bold text-gray-500">Knowledge Blog Coming Soon</div>;
+import { Equipment } from './pages/Equipment';
+import { About } from './pages/About';
+import { Knowledge } from './pages/Knowledge';
 
 function App() {
   return (
