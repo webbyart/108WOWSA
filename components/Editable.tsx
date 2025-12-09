@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useContent } from '../services/contentContext';
-import { Edit2, Check, X, Upload } from 'lucide-react';
+import { Edit2, Check, X, Upload, Plus, Trash2 } from 'lucide-react';
 
 interface EditableTextProps {
   id: string; // Used for key in global content, or just identifier if overrideValue is present
@@ -170,3 +170,78 @@ export const EditableImage: React.FC<EditableImageProps> = ({
     </div>
   );
 };
+
+interface EditableListProps {
+  id: string; // Key in content containing JSON string of string[]
+  defaultItems: string[];
+  className?: string;
+}
+
+export const EditableList: React.FC<EditableListProps> = ({ id, defaultItems, className }) => {
+  const { content, updateContent, isAdmin } = useContent();
+  const [items, setItems] = useState<string[]>([]);
+
+  useEffect(() => {
+    try {
+      setItems(JSON.parse(content[id] || JSON.stringify(defaultItems)));
+    } catch {
+      setItems(defaultItems);
+    }
+  }, [content, id, defaultItems]);
+
+  const handleSaveItem = (index: number, newValue: string) => {
+    const newItems = [...items];
+    newItems[index] = newValue;
+    updateContent(id, JSON.stringify(newItems));
+  };
+
+  const handleDelete = (index: number) => {
+    if (confirm("Remove this item?")) {
+      const newItems = items.filter((_, i) => i !== index);
+      updateContent(id, JSON.stringify(newItems));
+    }
+  };
+
+  const handleAdd = () => {
+    const newItems = [...items, 'New Item'];
+    updateContent(id, JSON.stringify(newItems));
+  };
+
+  return (
+    <ul className={className}>
+      {items.map((item, index) => (
+        <li key={index} className="flex items-start gap-2 mb-3 group relative">
+           <span className="text-brand-lime mt-1 flex-shrink-0 font-bold text-lg">✓</span>
+           <div className="flex-grow">
+             <EditableText 
+               id={`list_${id}_${index}`} 
+               overrideValue={item}
+               onSave={(val) => handleSaveItem(index, val)}
+               tag="span"
+               className="block"
+             />
+           </div>
+           {isAdmin && (
+             <button 
+               onClick={() => handleDelete(index)}
+               className="text-red-500 opacity-0 group-hover:opacity-100 transition px-2 hover:bg-red-900/20 rounded"
+               title="Remove Item"
+             >
+               <Trash2 size={16} />
+             </button>
+           )}
+        </li>
+      ))}
+      {isAdmin && (
+        <li className="mt-4">
+          <button 
+            onClick={handleAdd}
+            className="flex items-center gap-2 text-sm text-brand-orange hover:text-white transition bg-brand-light px-4 py-2 rounded-full border border-brand-orange border-dashed hover:bg-brand-orange/20"
+          >
+            <Plus size={16} /> Add Item
+          </button>
+        </li>
+      )}
+    </ul>
+  );
+}

@@ -130,7 +130,7 @@ export const DEFAULT_CONTENT: SiteContent = {
     'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/1200px-BMW.svg.png',
     'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Benz_Logo_2010.svg/1200px-Mercedes-Benz_Logo_2010.svg.png',
     'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/1200px-Netflix_2015_logo.svg.png',
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Facebook_logo_%28square%29.png/800px-Facebook_logo_%28square%29.png'
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Facebook_logo_%22square%22.png/800px-Facebook_logo_%22square%22.png'
   ]),
 
   // REALISTIC IMAGES (Unsplash)
@@ -156,6 +156,22 @@ export const DEFAULT_CONTENT: SiteContent = {
   'svc_party_content': 'เปลี่ยนค่ำคืนธรรมดาให้เป็นปาร์ตี้สุด WOW! ไม่ว่างจะเป็นงานเลี้ยงปีใหม่ (New Year Party), งานฉลองความสำเร็จ, หรืองาน Staff Party เราพร้อมเนรมิตบรรยากาศตามธีมที่คุณต้องการ',
   'svc_management_title': 'บริการบริหารและจัดการงานอีเว้นท์',
   'svc_management_content': 'สำหรับองค์กรที่ต้องการผู้ช่วยมืออาชีพในการดูแลภาพรวมของงานอีเว้นท์ต่างๆ เพื่อให้งานดำเนินไปอย่างราบรื่นตามวัตถุประสงค์ เราพร้อมเป็นพาร์ทเนอร์เคียงข้างคุณ',
+  
+  // Dynamic Service Lists
+  'svc_list_items': JSON.stringify([
+    'วาง Concept และ Theme งาน',
+    'จัดหาถานที่',
+    'ออกแบบเกมส์กีฬา',
+    'ทีมงานรันคิว พิธีกร',
+    'ระบบเสียง อาหาร เครื่องดื่ม'
+  ]),
+  'svc_list_items_en': JSON.stringify([
+    'Concept and Theme Planning',
+    'Venue Sourcing',
+    'Game Design',
+    'Staff and MC',
+    'Sound System, Food, Drinks'
+  ]),
 
   // Services EN
   'svc_sport-day_title_en': 'Annual Sport Day Organizer Services',

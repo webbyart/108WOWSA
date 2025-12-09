@@ -71,12 +71,17 @@ export const Home: React.FC = () => {
   };
 
   const addClientLogo = () => {
-    const newUrl = prompt("Enter Client Logo URL (Recommended: Transparent PNG or White Background):");
-    if (newUrl) {
-      const newLogos = [...clientLogos, newUrl];
-      setClientLogos(newLogos);
-      updateContent('client_logos', JSON.stringify(newLogos));
-    }
+    // Add a placeholder image that the admin can then update via the file upload interface
+    const newLogos = [...clientLogos, 'https://placehold.co/200x100/eeeeee/999999?text=Upload+Logo'];
+    setClientLogos(newLogos);
+    updateContent('client_logos', JSON.stringify(newLogos));
+  };
+
+  const updateClientLogo = (index: number, newSrc: string) => {
+    const newLogos = [...clientLogos];
+    newLogos[index] = newSrc;
+    setClientLogos(newLogos);
+    updateContent('client_logos', JSON.stringify(newLogos));
   };
 
   const removeClientLogo = (index: number) => {
@@ -287,12 +292,21 @@ export const Home: React.FC = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-center">
               {clientLogos.map((logo, index) => (
                 <div key={index} className="relative group p-4 flex items-center justify-center h-24 grayscale hover:grayscale-0 transition-all duration-300">
-                  <img src={logo} alt={`Client ${index}`} className="max-w-full max-h-full object-contain" />
+                  {/* Wraps logo in EditableImage for file upload support */}
+                  <div className="w-full h-full flex items-center justify-center">
+                    <EditableImage 
+                      id={`client_logo_${index}`} 
+                      alt={`Client ${index}`}
+                      overrideSrc={logo}
+                      onSave={(newSrc) => updateClientLogo(index, newSrc)}
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  </div>
                   
-                  {/* Admin Controls */}
+                  {/* Admin Remove Button */}
                   {isAdmin && (
-                    <div className="absolute inset-0 bg-red-500/20 hidden group-hover:flex items-center justify-center rounded cursor-pointer" onClick={() => removeClientLogo(index)}>
-                      <Trash2 className="text-red-600 bg-white rounded-full p-1" size={24} />
+                    <div className="absolute top-0 right-0 p-1 cursor-pointer opacity-0 group-hover:opacity-100 transition" onClick={() => removeClientLogo(index)}>
+                      <Trash2 className="text-red-600 bg-white rounded-full p-1 shadow" size={20} />
                     </div>
                   )}
                 </div>

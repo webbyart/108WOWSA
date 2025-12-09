@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { EditableText, EditableImage } from '../components/Editable';
+import { EditableText, EditableImage, EditableList } from '../components/Editable';
 import { useContent } from '../services/contentContext';
 import { UI_LABELS } from '../constants';
 
@@ -83,20 +83,17 @@ export const Services: React.FC = () => {
                   className="text-lg text-gray-300 leading-relaxed mb-6"
                 />
                 <h3 className="text-2xl font-bold mb-4 text-white">What We Offer</h3>
-                <ul className="space-y-2 text-gray-400">
-                  {[
-                    language === 'th' ? 'วาง Concept และ Theme งาน' : 'Concept and Theme Planning',
-                    language === 'th' ? 'จัดหาถานที่' : 'Venue Sourcing',
-                    language === 'th' ? 'ออกแบบเกมส์กีฬา' : 'Game Design',
-                    language === 'th' ? 'ทีมงานรันคิว พิธีกร' : 'Staff and MC',
-                    language === 'th' ? 'ระบบเสียง อาหาร เครื่องดื่ม' : 'Sound System, Food, Drinks'
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className="text-brand-lime mt-1">✓</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
+                
+                {/* Dynamic Editable List */}
+                <EditableList 
+                  id={`svc_list_items${suffix}`}
+                  defaultItems={language === 'th' 
+                    ? ['วาง Concept และ Theme งาน', 'จัดหาถานที่', 'ออกแบบเกมส์กีฬา', 'ทีมงานรันคิว พิธีกร', 'ระบบเสียง อาหาร เครื่องดื่ม'] 
+                    : ['Concept and Theme Planning', 'Venue Sourcing', 'Game Design', 'Staff and MC', 'Sound System, Food, Drinks']
+                  }
+                  className="space-y-2 text-gray-400"
+                />
+
               </div>
             </div>
           </div>
