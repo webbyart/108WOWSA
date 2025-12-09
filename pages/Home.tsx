@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+
+import React, { useState, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Trophy, PartyPopper, Gamepad2, CheckCircle, ChevronLeft, ChevronRight, Plus, Trash2 } from 'lucide-react';
+import { Trophy, PartyPopper, Gamepad2, CheckCircle, ChevronLeft, ChevronRight, Plus, Trash2, Upload, X, Edit2 } from 'lucide-react';
 import { EditableText, EditableImage } from '../components/Editable';
 import { useContent } from '../services/contentContext';
 import { UI_LABELS } from '../constants';
@@ -9,6 +10,8 @@ export const Home: React.FC = () => {
   const { language, content, isAdmin, updateContent } = useContent();
   const labels = UI_LABELS[language];
   const suffix = language === 'en' ? '_en' : '';
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   
   // Slider Logic - Derived directly from content for reliability
   const sliderImages = useMemo(() => {
@@ -59,9 +62,24 @@ export const Home: React.FC = () => {
     }
   };
 
-  const addClientLogo = () => {
-    const newLogos = [...clientLogos, 'https://placehold.co/200x100/333333/cccccc?text=New+Logo'];
-    updateContent('client_logos', JSON.stringify(newLogos));
+  // --- Client Logo Management ---
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsProcessing(true);
+    try {
+      const base64 = await resizeImage(file);
+      const newLogos = [...clientLogos, base64];
+      updateContent('client_logos', JSON.stringify(newLogos));
+    } catch (error) {
+      alert("Failed to process image");
+      console.error(error);
+    } finally {
+      setIsProcessing(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
   };
 
   const updateClientLogo = (index: number, newSrc: string) => {
@@ -71,17 +89,54 @@ export const Home: React.FC = () => {
   };
 
   const removeClientLogo = (index: number) => {
-    if (confirm("Remove this client logo?")) {
+    if (confirm("Delete this logo?")) {
        const newLogos = clientLogos.filter((_, i) => i !== index);
        updateContent('client_logos', JSON.stringify(newLogos));
     }
+  };
+
+  // Helper to resize image client-side to save space
+  const resizeImage = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_SIZE = 400; // Resize to reasonable logo size
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height *= MAX_SIZE / width;
+              width = MAX_SIZE;
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width *= MAX_SIZE / height;
+              height = MAX_SIZE;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/png'));
+        };
+        img.onerror = reject;
+      };
+      reader.onerror = reject;
+    });
   };
 
   return (
     <div>
       {/* Hero Slider Section */}
       <section className="relative h-[600px] w-full overflow-hidden bg-black group">
-        {sliderImages.map((src, index) => (
+        {sliderImages.map((src: string, index: number) => (
           <div 
             key={index}
             className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
@@ -132,7 +187,7 @@ export const Home: React.FC = () => {
 
         {/* Indicators */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-          {sliderImages.map((_, idx) => (
+          {sliderImages.map((_: string, idx: number) => (
             <button 
               key={idx} 
               onClick={() => setCurrentSlide(idx)}
@@ -242,84 +297,106 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Our Clients Section - Updated for Luxury Dark Theme */}
+      {/* Our Clients Section - TABLE Layout with Upload Controls */}
       <section className="py-20 bg-brand-dark">
         <div className="container mx-auto px-4 relative z-10">
-          {/* Dark Card Wrapper with Luxury Border */}
+          {/* Wrapper */}
           <div className="bg-[#101010] rounded-3xl shadow-2xl p-8 md:p-12 text-center max-w-6xl mx-auto border border-gray-800 relative overflow-hidden">
             
-            {/* Decorative Top Gradient Line */}
+            {/* Top Gradient */}
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-lime via-brand-orange to-brand-lime opacity-80"></div>
 
-            {/* Title - Lime Green to Orange Gradient */}
+            {/* Headings */}
             <EditableText 
               id="client_title" 
               tag="h2" 
               defaultText="แบรนด์ชั้นนำกว่า 2,000 ราย ไว้วางใจเลือก 108WOW"
               className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-lime to-brand-orange mb-3 drop-shadow-[0_2px_10px_rgba(190,233,13,0.15)]"
             />
-            
-            {/* Subtitle - Brand Orange */}
             <EditableText 
               id="client_subtitle" 
               tag="p" 
               defaultText="เพราะเรารู้ว่า 'ภาพลักษณ์' และ 'การบริการ' คือหัวใจของงานอีเว้นท์"
               className="text-base md:text-xl font-bold text-brand-orange mb-6 tracking-wide"
             />
-
             <div className="w-24 h-1 bg-gradient-to-r from-brand-lime to-brand-orange mx-auto mb-8 rounded-full"></div>
-
-            {/* Description - Readable Light Gray */}
             <EditableText 
               id="client_desc" 
               tag="p" 
               multiline
-              defaultText="ออแกไนซ์และแบรนด์ชั้นนำกว่า 2,000 ราย วางใจใช้บริการจาก 108WOW เพราะเราเข้าใจดีว่า &quot;ภาพลักษณ์&quot; และ &quot;การบริการ&quot; คือหัวใจของทุกอีเวนต์ เมื่อพูดถึงการสร้างประสบการณ์ที่น่าประทับใจในงานอีเวนต์หรือกิจกรรมการตลาด 108WOW คือชื่อที่แบรนด์และองค์กรชั้นนำเลือกใช้"
+              defaultText="ออแกไนซ์และแบรนด์ชั้นนำกว่า 2,000 ราย วางใจใช้บริการจาก 108WOW..."
               className="text-gray-300 text-sm md:text-base max-w-3xl mx-auto mb-12 leading-relaxed font-light"
             />
 
-            {/* Logo Grid with Luxury Cards - UPDATED to 6 columns for dense look */}
-            <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-4 items-center justify-center">
-              {clientLogos.map((logo, index) => (
-                <div key={index} className="relative group h-24 md:h-28 perspective-1000">
-                  {/* Luxury Logo Card - PADDING p-4 for perfect fit, Stronger Glow */}
-                  <div className="w-full h-full bg-black/40 backdrop-blur-sm rounded-lg flex items-center justify-center p-4 border border-gray-800 transition-all duration-300 group-hover:border-brand-lime group-hover:shadow-[0_0_30px_rgba(190,233,13,0.6)] group-hover:-translate-y-1 relative overflow-hidden">
-                    
-                    {/* Background Shine Effect on Hover */}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-brand-lime/0 via-brand-lime/10 to-brand-lime/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+            {/* Admin Upload Control */}
+            {isAdmin && (
+               <div className="mb-6 flex justify-center">
+                 <div className="relative">
+                   <input 
+                     type="file" 
+                     ref={fileInputRef}
+                     onChange={handleLogoUpload}
+                     accept="image/*"
+                     className="hidden"
+                   />
+                   <button 
+                     onClick={() => fileInputRef.current?.click()}
+                     disabled={isProcessing}
+                     className="flex items-center gap-2 bg-brand-lime text-black px-6 py-3 rounded-full font-bold hover:bg-white transition shadow-lg hover:scale-105"
+                   >
+                     {isProcessing ? (
+                       <span className="animate-spin">⏳</span>
+                     ) : (
+                       <Upload size={20} />
+                     )}
+                     {isProcessing ? 'Uploading...' : 'Upload New Logo'}
+                   </button>
+                 </div>
+               </div>
+            )}
 
-                    {/* Logo Image - Brightness 0 Invert ensures logos are White on Dark */}
-                    <div className="w-full h-full flex items-center justify-center relative z-10">
-                      <EditableImage 
+            {/* Table-Like Grid Layout */}
+            <div className="border border-gray-700 bg-black/40 rounded-lg overflow-hidden">
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 divide-x divide-y divide-gray-700">
+                {clientLogos.map((logo: string, index: number) => (
+                  <div key={index} className="relative group h-32 flex items-center justify-center p-2 bg-black hover:bg-white/5 transition duration-300">
+                    
+                    {/* Image Container - Fit to Edge */}
+                    <div className="w-full h-full flex items-center justify-center overflow-hidden">
+                       <EditableImage 
                         id={`client_logo_${index}`} 
                         alt={`Client ${index}`}
                         overrideSrc={logo}
                         onSave={(newSrc) => updateClientLogo(index, newSrc)}
-                        className="w-full h-full object-contain filter brightness-0 invert opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
+                        // p-0 and object-contain to fit perfectly to edges
+                        className="w-full h-full"
+                        imgClassName="object-contain w-full h-full filter brightness-0 invert opacity-60 group-hover:opacity-100 transition-all duration-300 transform group-hover:scale-110"
                       />
                     </div>
-                  </div>
-                  
-                  {/* Admin Remove Button */}
-                  {isAdmin && (
-                    <div className="absolute -top-2 -right-2 p-1 cursor-pointer z-50 opacity-0 group-hover:opacity-100 transition" onClick={() => removeClientLogo(index)}>
-                      <Trash2 className="text-white bg-red-600 rounded-full p-1.5 shadow-lg hover:bg-red-700" size={24} />
-                    </div>
-                  )}
-                </div>
-              ))}
 
-              {/* Add Client Button - Clearly visible */}
-              {isAdmin && (
-                <div 
-                  onClick={addClientLogo}
-                  className="h-24 md:h-28 flex flex-col items-center justify-center border-2 border-dashed border-brand-orange/50 rounded-lg cursor-pointer hover:border-brand-lime hover:bg-brand-lime/10 transition text-brand-orange hover:text-brand-lime group"
-                >
-                  <Plus size={32} className="mb-2 group-hover:scale-125 transition duration-300" />
-                  <span className="text-xs font-bold uppercase tracking-wider">Add</span>
-                </div>
-              )}
+                    {/* Admin Controls Overlay */}
+                    {isAdmin && (
+                      <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition flex flex-col items-center justify-center gap-2 z-20">
+                         <span className="text-xs text-gray-400 font-mono">Slot {index + 1}</span>
+                         <button 
+                           onClick={() => removeClientLogo(index)}
+                           className="flex items-center gap-1 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold hover:bg-red-700"
+                         >
+                           <Trash2 size={12} /> Delete
+                         </button>
+                         <span className="text-[10px] text-gray-500 mt-1">Click image to edit</span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                {/* Empty Cells Filler (Optional visual improvement if needed, usually just let grid handle it) */}
+              </div>
             </div>
+            
+            <p className="text-gray-500 text-xs mt-4 text-right">
+              {clientLogos.length} Clients Displayed
+            </p>
 
           </div>
         </div>
