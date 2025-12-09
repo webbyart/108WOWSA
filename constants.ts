@@ -207,14 +207,39 @@ export const DEFAULT_CONTENT: SiteContent = {
   'about_story_en': '108WOW was founded on a passion for creating happiness and smiles through activities. We started as a small team loving fun, growing into a national leader in Sport Days and Parties.',
   'about_mission_en': 'Determined to be the leader in creative, safe, and value-for-money Sport Day and Event organization, creating good memories for every organization.',
   
-  // Blog Titles Default
-  'blog_title_1': '5 ธีมงานกีฬาสีสุดฮิต ปี 2024 ที่บริษัทไม่ควรพลาด',
-  'blog_title_2': 'เคล็ดลับจัดงานปาร์ตี้บริษัทยังไง ให้พนักงานประทับใจ',
-  'blog_title_3': 'ทำไม Team Building ถึงสำคัญกับองค์กรยุคใหม่?',
-  'blog_title_4': 'วิธีเลือกเกมส์ให้เหมาะกับจำนวนคนและสถานที่',
-
-  'blog_title_1_en': '5 Popular Sport Day Themes in 2024',
-  'blog_title_2_en': 'Tips for Organizing Impressive Corporate Parties',
-  'blog_title_3_en': 'Why is Team Building Important?',
-  'blog_title_4_en': 'How to Choose Games for Your Event Size'
+  // Knowledge Articles (Dynamic Array)
+  'knowledge_articles': JSON.stringify([
+    {
+      id: '1',
+      image: 'https://picsum.photos/600/400?random=21',
+      title: '5 ธีมงานกีฬาสีสุดฮิต ปี 2024',
+      title_en: '5 Popular Sport Day Themes in 2024',
+      excerpt: 'รวมธีมงานกีฬาสีบริษัทที่กำลังมาแรง สร้างสีสันและความสนุกแบบฉุดไม่อยู่...',
+      excerpt_en: 'A collection of trending corporate sport day themes to create unstoppable fun...'
+    },
+    {
+      id: '2',
+      image: 'https://picsum.photos/600/400?random=22',
+      title: 'เคล็ดลับจัดงานปาร์ตี้บริษัทยังไง ให้พนักงานประทับใจ',
+      title_en: 'Tips for Organizing Impressive Corporate Parties',
+      excerpt: 'เทคนิคการวางแผนงานปาร์ตี้ให้ไหลลื่น อาหารอร่อย ดนตรีเพราะ และกิจกรรมโดนใจ...',
+      excerpt_en: 'Techniques for planning smooth parties with good food, music, and activities...'
+    },
+    {
+      id: '3',
+      image: 'https://picsum.photos/600/400?random=23',
+      title: 'ทำไม Team Building ถึงสำคัญกับองค์กรยุคใหม่?',
+      title_en: 'Why is Team Building Important?',
+      excerpt: 'การสร้างความสัมพันธ์ในทีมช่วยเพิ่มประสิทธิภาพการทำงานได้อย่างไร มาหาคำตอบกัน...',
+      excerpt_en: 'How does team building improve work efficiency? Let\'s find out...'
+    },
+    {
+      id: '4',
+      image: 'https://picsum.photos/600/400?random=24',
+      title: 'วิธีเลือกเกมส์ให้เหมาะกับจำนวนคนและสถานที่',
+      title_en: 'How to Choose Games for Your Event Size',
+      excerpt: 'แนะนำการเลือกเกมส์สันทนาการให้เหมาะสมกับพื้นที่และจำนวนผู้เข้าร่วมงาน...',
+      excerpt_en: 'Guide to choosing recreation games suitable for your space and number of participants...'
+    }
+  ])
 };

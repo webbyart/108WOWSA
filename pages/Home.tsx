@@ -257,56 +257,68 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Our Clients Section - New Addition */}
+      {/* Our Clients Section - Updated for Luxury Dark Theme */}
       <section className="py-20 bg-brand-dark">
         <div className="container mx-auto px-4 relative z-10">
-          {/* White Card Wrapper */}
-          <div className="bg-white text-gray-800 rounded-3xl shadow-2xl p-8 md:p-12 text-center max-w-5xl mx-auto border-4 border-gray-200 relative overflow-hidden">
+          {/* Dark Card Wrapper with Luxury Border */}
+          <div className="bg-[#101010] rounded-3xl shadow-2xl p-8 md:p-12 text-center max-w-5xl mx-auto border border-gray-800 relative overflow-hidden">
             
-            {/* Decorative Header */}
+            {/* Decorative Top Gradient Line */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-lime via-brand-orange to-brand-lime opacity-80"></div>
+
+            {/* Title - Lime Green to Orange Gradient */}
             <EditableText 
               id="client_title" 
               tag="h2" 
               defaultText="แบรนด์ชั้นนำกว่า 2,000 ราย ไว้วางใจเลือก 108WOW"
-              className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-2 drop-shadow-sm"
+              className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-lime to-brand-orange mb-3 drop-shadow-[0_2px_10px_rgba(190,233,13,0.15)]"
             />
             
+            {/* Subtitle - Brand Orange */}
             <EditableText 
               id="client_subtitle" 
               tag="p" 
               defaultText="เพราะเรารู้ว่า 'ภาพลักษณ์' และ 'การบริการ' คือหัวใจของงานอีเว้นท์"
-              className="text-base md:text-xl font-bold text-blue-800 mb-6"
+              className="text-base md:text-xl font-bold text-brand-orange mb-6 tracking-wide"
             />
 
-            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mb-6 rounded-full"></div>
+            <div className="w-24 h-1 bg-gradient-to-r from-brand-lime to-brand-orange mx-auto mb-8 rounded-full"></div>
 
+            {/* Description - Readable Light Gray */}
             <EditableText 
               id="client_desc" 
               tag="p" 
               multiline
-              defaultText="ออแกไนซ์และแบรนด์ชั้นนำกว่า 2,000 ราย วางใจใช้บริการจาก 108WOW..."
-              className="text-gray-600 text-sm md:text-base max-w-3xl mx-auto mb-10 leading-relaxed"
+              defaultText="ออแกไนซ์และแบรนด์ชั้นนำกว่า 2,000 ราย วางใจใช้บริการจาก 108WOW เพราะเราเข้าใจดีว่า &quot;ภาพลักษณ์&quot; และ &quot;การบริการ&quot; คือหัวใจของทุกอีเวนต์ เมื่อพูดถึงการสร้างประสบการณ์ที่น่าประทับใจในงานอีเวนต์หรือกิจกรรมการตลาด 108WOW คือชื่อที่แบรนด์และองค์กรชั้นนำเลือกใช้"
+              className="text-gray-300 text-sm md:text-base max-w-3xl mx-auto mb-12 leading-relaxed font-light"
             />
 
-            {/* Logo Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-center">
+            {/* Logo Grid with Luxury Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 items-center justify-center">
               {clientLogos.map((logo, index) => (
-                <div key={index} className="relative group p-4 flex items-center justify-center h-24 grayscale hover:grayscale-0 transition-all duration-300">
-                  {/* Wraps logo in EditableImage for file upload support */}
-                  <div className="w-full h-full flex items-center justify-center">
-                    <EditableImage 
-                      id={`client_logo_${index}`} 
-                      alt={`Client ${index}`}
-                      overrideSrc={logo}
-                      onSave={(newSrc) => updateClientLogo(index, newSrc)}
-                      className="max-w-full max-h-full object-contain"
-                    />
+                <div key={index} className="relative group h-28 md:h-32 perspective-1000">
+                  {/* Luxury Logo Card - PADDING INCREASED TO p-8 for smaller logo look */}
+                  <div className="w-full h-full bg-black/40 backdrop-blur-sm rounded-lg flex items-center justify-center p-8 border border-gray-800 shadow-lg transition-all duration-300 group-hover:border-brand-lime/50 group-hover:shadow-[0_0_20px_rgba(190,233,13,0.15)] group-hover:-translate-y-1 relative overflow-hidden">
+                    
+                    {/* Background Shine Effect on Hover */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-brand-lime/0 via-brand-lime/5 to-brand-lime/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
+                    {/* Logo Image - Brightness 0 Invert ensures logos are White on Dark */}
+                    <div className="w-full h-full flex items-center justify-center relative z-10">
+                      <EditableImage 
+                        id={`client_logo_${index}`} 
+                        alt={`Client ${index}`}
+                        overrideSrc={logo}
+                        onSave={(newSrc) => updateClientLogo(index, newSrc)}
+                        className="w-full h-full object-contain filter brightness-0 invert opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
+                      />
+                    </div>
                   </div>
                   
                   {/* Admin Remove Button */}
                   {isAdmin && (
-                    <div className="absolute top-0 right-0 p-1 cursor-pointer opacity-0 group-hover:opacity-100 transition" onClick={() => removeClientLogo(index)}>
-                      <Trash2 className="text-red-600 bg-white rounded-full p-1 shadow" size={20} />
+                    <div className="absolute -top-2 -right-2 p-1 cursor-pointer z-50 opacity-0 group-hover:opacity-100 transition" onClick={() => removeClientLogo(index)}>
+                      <Trash2 className="text-white bg-red-600 rounded-full p-1.5 shadow-lg hover:bg-red-700" size={24} />
                     </div>
                   )}
                 </div>
@@ -316,10 +328,10 @@ export const Home: React.FC = () => {
               {isAdmin && (
                 <div 
                   onClick={addClientLogo}
-                  className="h-24 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-brand-orange hover:bg-orange-50 transition text-gray-400 hover:text-brand-orange"
+                  className="h-28 md:h-32 flex flex-col items-center justify-center border-2 border-dashed border-gray-700 rounded-lg cursor-pointer hover:border-brand-lime hover:bg-brand-lime/10 transition text-gray-500 hover:text-brand-lime group"
                 >
-                  <Plus size={32} />
-                  <span className="text-xs font-bold mt-1">Add Logo</span>
+                  <Plus size={32} className="mb-2 group-hover:scale-110 transition" />
+                  <span className="text-xs font-bold uppercase tracking-wider">Add Logo</span>
                 </div>
               )}
             </div>
