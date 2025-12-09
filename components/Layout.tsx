@@ -80,48 +80,14 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         {/* Navbar */}
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2">
-             {/* Admin Editable Logo - Custom Design matching user image */}
-             <div className="w-auto h-14 relative flex items-center">
-               {content['site_logo'] ? (
-                 <EditableImage 
-                    id="site_logo" 
-                    alt="108WOW Logo" 
-                    className="w-auto h-full object-contain object-left max-w-[250px]"
-                    defaultSrc=""
-                  />
-               ) : (
-                 <div className="flex items-end gap-2 group cursor-pointer">
-                   {/* Torch Icon */}
-                   <div className="text-brand-lime transform -rotate-12 group-hover:rotate-0 transition duration-300">
-                     <Flame size={48} strokeWidth={2.5} fill="currentColor" className="drop-shadow-[0_0_8px_rgba(190,233,13,0.5)]" />
-                   </div>
-                   
-                   {/* Text Group */}
-                   <div className="flex flex-col relative bottom-1">
-                      <div className="flex items-baseline">
-                        <span className="text-5xl font-black text-brand-lime italic tracking-tighter leading-none" style={{ fontFamily: 'Arial, sans-serif' }}>WOW</span>
-                        <div className="flex flex-col ml-1 items-start">
-                           <span className="text-[10px] text-brand-lime uppercase leading-none mb-0.5 tracking-wide">Powered by</span>
-                           <div className="flex items-center gap-0.5">
-                             <div className="w-4 h-4 rounded-full bg-brand-lime flex items-center justify-center">
-                               <span className="text-[8px] font-bold text-black">108</span>
-                             </div>
-                           </div>
-                        </div>
-                      </div>
-                      <span className="text-[10px] text-brand-lime font-medium tracking-[0.2em] uppercase leading-none mt-1">
-                        Sportsday & Activity Expert
-                      </span>
-                   </div>
-
-                   {/* Hidden editable image to allow upload if empty */}
-                   {isAdmin && (
-                      <div className="absolute inset-0 opacity-0 hover:opacity-100 bg-black/50 flex items-center justify-center text-xs text-white cursor-pointer pointer-events-none z-20">
-                         <EditableImage id="site_logo" alt="Upload Logo" className="w-full h-full" defaultSrc=""/>
-                      </div>
-                   )}
-                 </div>
-               )}
+             {/* Admin Editable Logo - Dynamic Image */}
+             <div className="h-12 md:h-16 w-auto max-w-[200px] md:max-w-[280px] relative flex items-center">
+               <EditableImage 
+                  id="site_logo" 
+                  alt="108WOW Logo" 
+                  className="w-full h-full object-contain object-left"
+                  defaultSrc="https://placehold.co/200x60/bee90d/000000?text=LOGO"
+                />
              </div>
           </Link>
 

@@ -14,6 +14,9 @@ export const Home: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [sliderImages, setSliderImages] = useState<string[]>([]);
 
+  // Client Logos Logic
+  const [clientLogos, setClientLogos] = useState<string[]>([]);
+
   useEffect(() => {
     try {
       const images = JSON.parse(content['hero_slider_images'] || '[]');
@@ -25,6 +28,15 @@ export const Home: React.FC = () => {
       }
     } catch (e) {
       setSliderImages(['https://images.unsplash.com/photo-1472653431158-6364773b2a56']);
+    }
+  }, [content]);
+
+  useEffect(() => {
+    try {
+      const logos = JSON.parse(content['client_logos'] || '[]');
+      setClientLogos(logos);
+    } catch (e) {
+      setClientLogos([]);
     }
   }, [content]);
 
@@ -55,6 +67,23 @@ export const Home: React.FC = () => {
       setSliderImages(newImages);
       updateContent('hero_slider_images', JSON.stringify(newImages));
       if (currentSlide >= newImages.length) setCurrentSlide(0);
+    }
+  };
+
+  const addClientLogo = () => {
+    const newUrl = prompt("Enter Client Logo URL (Recommended: Transparent PNG or White Background):");
+    if (newUrl) {
+      const newLogos = [...clientLogos, newUrl];
+      setClientLogos(newLogos);
+      updateContent('client_logos', JSON.stringify(newLogos));
+    }
+  };
+
+  const removeClientLogo = (index: number) => {
+    if (confirm("Remove this client logo?")) {
+       const newLogos = clientLogos.filter((_, i) => i !== index);
+       setClientLogos(newLogos);
+       updateContent('client_logos', JSON.stringify(newLogos));
     }
   };
 
@@ -220,6 +249,68 @@ export const Home: React.FC = () => {
                 </div>
               ))}
            </div>
+        </div>
+      </section>
+
+      {/* Our Clients Section - New Addition */}
+      <section className="py-20 bg-brand-dark">
+        <div className="container mx-auto px-4 relative z-10">
+          {/* White Card Wrapper */}
+          <div className="bg-white text-gray-800 rounded-3xl shadow-2xl p-8 md:p-12 text-center max-w-5xl mx-auto border-4 border-gray-200 relative overflow-hidden">
+            
+            {/* Decorative Header */}
+            <EditableText 
+              id="client_title" 
+              tag="h2" 
+              defaultText="แบรนด์ชั้นนำกว่า 2,000 ราย ไว้วางใจเลือก 108WOW"
+              className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-2 drop-shadow-sm"
+            />
+            
+            <EditableText 
+              id="client_subtitle" 
+              tag="p" 
+              defaultText="เพราะเรารู้ว่า 'ภาพลักษณ์' และ 'การบริการ' คือหัวใจของงานอีเว้นท์"
+              className="text-base md:text-xl font-bold text-blue-800 mb-6"
+            />
+
+            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mb-6 rounded-full"></div>
+
+            <EditableText 
+              id="client_desc" 
+              tag="p" 
+              multiline
+              defaultText="ออแกไนซ์และแบรนด์ชั้นนำกว่า 2,000 ราย วางใจใช้บริการจาก 108WOW..."
+              className="text-gray-600 text-sm md:text-base max-w-3xl mx-auto mb-10 leading-relaxed"
+            />
+
+            {/* Logo Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-center">
+              {clientLogos.map((logo, index) => (
+                <div key={index} className="relative group p-4 flex items-center justify-center h-24 grayscale hover:grayscale-0 transition-all duration-300">
+                  <img src={logo} alt={`Client ${index}`} className="max-w-full max-h-full object-contain" />
+                  
+                  {/* Admin Controls */}
+                  {isAdmin && (
+                    <div className="absolute inset-0 bg-red-500/20 hidden group-hover:flex items-center justify-center rounded cursor-pointer" onClick={() => removeClientLogo(index)}>
+                      <Trash2 className="text-red-600 bg-white rounded-full p-1" size={24} />
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              {/* Add Client Button */}
+              {isAdmin && (
+                <div 
+                  onClick={addClientLogo}
+                  className="h-24 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-brand-orange hover:bg-orange-50 transition text-gray-400 hover:text-brand-orange"
+                >
+                  <Plus size={32} />
+                  <span className="text-xs font-bold mt-1">Add Logo</span>
+                </div>
+              )}
+            </div>
+
+          </div>
         </div>
       </section>
     </div>

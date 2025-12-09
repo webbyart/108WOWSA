@@ -98,7 +98,7 @@ export const MOCK_PROJECTS: Project[] = [
 
 export const DEFAULT_CONTENT: SiteContent = {
   // Global
-  'site_logo': '',
+  'site_logo': 'https://placehold.co/200x60/bee90d/000000?text=108WOW+LOGO',
   
   // Header & Footer
   'contact_phone': '089-123-4567',
@@ -117,6 +117,21 @@ export const DEFAULT_CONTENT: SiteContent = {
   'home_hero_subtitle_en': 'The #1 Expert in Sport Days, Parties, and Team Building Activities.',
   'home_intro_title_en': 'Welcome to the World of 108WOW Activities',
   'home_intro_text_en': 'We are a professional team ready to transform your corporate sport days, parties, and team building activities into more than just events. We create memorable experiences, unity, and smiles with modern, safe equipment and a team that cares about every detail.',
+
+  // Client Section
+  'client_title': 'แบรนด์ชั้นนำกว่า 2,000 ราย ไว้วางใจเลือก 108WOW',
+  'client_subtitle': 'เพราะเรารู้ว่า "ภาพลักษณ์" และ "การบริการ" คือหัวใจของงานอีเว้นท์',
+  'client_desc': 'ออแกไนซ์และแบรนด์ชั้นนำกว่า 2,000 ราย วางใจใช้บริการจาก 108WOW เพราะเราเข้าใจดีว่า "ภาพลักษณ์" และ "การบริการ" คือหัวใจของทุกอีเวนต์ เมื่อพูดถึงการสร้างประสบการณ์ที่น่าประทับใจในงานอีเวนต์หรือกิจกรรมการตลาด 108WOW คือชื่อที่แบรนด์และองค์กรชั้นนำเลือกใช้',
+  'client_logos': JSON.stringify([
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/1200px-Logo_NIKE.svg.png',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/1200px-Adidas_Logo.svg.png',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1200px-Google_%22G%22_Logo.svg.png',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/800px-Apple_logo_black.svg.png',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/1200px-BMW.svg.png',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Benz_Logo_2010.svg/1200px-Mercedes-Benz_Logo_2010.svg.png',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/1200px-Netflix_2015_logo.svg.png',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Facebook_logo_%28square%29.png/800px-Facebook_logo_%28square%29.png'
+  ]),
 
   // REALISTIC IMAGES (Unsplash)
   'hero_slider_images': JSON.stringify([
