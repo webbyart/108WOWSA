@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Trophy, PartyPopper, Gamepad2, CheckCircle, ChevronLeft, ChevronRight, Plus, Trash2 } from 'lucide-react';
 import { EditableText, EditableImage } from '../components/Editable';
@@ -10,37 +10,28 @@ export const Home: React.FC = () => {
   const labels = UI_LABELS[language];
   const suffix = language === 'en' ? '_en' : '';
   
-  // Slider Logic
+  // Slider Logic - Derived directly from content for reliability
+  const sliderImages = useMemo(() => {
+    try {
+      return JSON.parse(content['hero_slider_images'] || '[]');
+    } catch {
+      return ['https://images.unsplash.com/photo-1472653431158-6364773b2a56'];
+    }
+  }, [content['hero_slider_images']]);
+
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [sliderImages, setSliderImages] = useState<string[]>([]);
 
-  // Client Logos Logic
-  const [clientLogos, setClientLogos] = useState<string[]>([]);
-
-  useEffect(() => {
+  // Client Logos Logic - Derived directly from content
+  const clientLogos = useMemo(() => {
     try {
-      const images = JSON.parse(content['hero_slider_images'] || '[]');
-      if (images.length > 0) {
-        setSliderImages(images);
-      } else {
-        // Fallback default
-        setSliderImages(['https://images.unsplash.com/photo-1472653431158-6364773b2a56']);
-      }
-    } catch (e) {
-      setSliderImages(['https://images.unsplash.com/photo-1472653431158-6364773b2a56']);
+      return JSON.parse(content['client_logos'] || '[]');
+    } catch {
+      return [];
     }
-  }, [content]);
+  }, [content['client_logos']]);
 
-  useEffect(() => {
-    try {
-      const logos = JSON.parse(content['client_logos'] || '[]');
-      setClientLogos(logos);
-    } catch (e) {
-      setClientLogos([]);
-    }
-  }, [content]);
-
-  useEffect(() => {
+  // Auto-slide effect
+  React.useEffect(() => {
     const timer = setInterval(() => {
        if (sliderImages.length > 1) {
          setCurrentSlide(prev => (prev + 1) % sliderImages.length);
@@ -56,7 +47,6 @@ export const Home: React.FC = () => {
     const newUrl = prompt("Enter new image URL:");
     if (newUrl) {
       const newImages = [...sliderImages, newUrl];
-      setSliderImages(newImages);
       updateContent('hero_slider_images', JSON.stringify(newImages));
     }
   };
@@ -64,30 +54,25 @@ export const Home: React.FC = () => {
   const removeSlide = (index: number) => {
     if (confirm("Remove this slide?")) {
       const newImages = sliderImages.filter((_, i) => i !== index);
-      setSliderImages(newImages);
       updateContent('hero_slider_images', JSON.stringify(newImages));
       if (currentSlide >= newImages.length) setCurrentSlide(0);
     }
   };
 
   const addClientLogo = () => {
-    // Add a placeholder image that the admin can then update via the file upload interface
-    const newLogos = [...clientLogos, 'https://placehold.co/200x100/eeeeee/999999?text=Upload+Logo'];
-    setClientLogos(newLogos);
+    const newLogos = [...clientLogos, 'https://placehold.co/200x100/333333/cccccc?text=New+Logo'];
     updateContent('client_logos', JSON.stringify(newLogos));
   };
 
   const updateClientLogo = (index: number, newSrc: string) => {
     const newLogos = [...clientLogos];
     newLogos[index] = newSrc;
-    setClientLogos(newLogos);
     updateContent('client_logos', JSON.stringify(newLogos));
   };
 
   const removeClientLogo = (index: number) => {
     if (confirm("Remove this client logo?")) {
        const newLogos = clientLogos.filter((_, i) => i !== index);
-       setClientLogos(newLogos);
        updateContent('client_logos', JSON.stringify(newLogos));
     }
   };
@@ -261,7 +246,7 @@ export const Home: React.FC = () => {
       <section className="py-20 bg-brand-dark">
         <div className="container mx-auto px-4 relative z-10">
           {/* Dark Card Wrapper with Luxury Border */}
-          <div className="bg-[#101010] rounded-3xl shadow-2xl p-8 md:p-12 text-center max-w-5xl mx-auto border border-gray-800 relative overflow-hidden">
+          <div className="bg-[#101010] rounded-3xl shadow-2xl p-8 md:p-12 text-center max-w-6xl mx-auto border border-gray-800 relative overflow-hidden">
             
             {/* Decorative Top Gradient Line */}
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-lime via-brand-orange to-brand-lime opacity-80"></div>
@@ -293,15 +278,15 @@ export const Home: React.FC = () => {
               className="text-gray-300 text-sm md:text-base max-w-3xl mx-auto mb-12 leading-relaxed font-light"
             />
 
-            {/* Logo Grid with Luxury Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 items-center justify-center">
+            {/* Logo Grid with Luxury Cards - UPDATED to 6 columns for dense look */}
+            <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-4 items-center justify-center">
               {clientLogos.map((logo, index) => (
-                <div key={index} className="relative group h-28 md:h-32 perspective-1000">
-                  {/* Luxury Logo Card - PADDING INCREASED TO p-8 for smaller logo look */}
-                  <div className="w-full h-full bg-black/40 backdrop-blur-sm rounded-lg flex items-center justify-center p-8 border border-gray-800 shadow-lg transition-all duration-300 group-hover:border-brand-lime/50 group-hover:shadow-[0_0_20px_rgba(190,233,13,0.15)] group-hover:-translate-y-1 relative overflow-hidden">
+                <div key={index} className="relative group h-24 md:h-28 perspective-1000">
+                  {/* Luxury Logo Card - PADDING p-4 for perfect fit, Stronger Glow */}
+                  <div className="w-full h-full bg-black/40 backdrop-blur-sm rounded-lg flex items-center justify-center p-4 border border-gray-800 transition-all duration-300 group-hover:border-brand-lime group-hover:shadow-[0_0_30px_rgba(190,233,13,0.6)] group-hover:-translate-y-1 relative overflow-hidden">
                     
                     {/* Background Shine Effect on Hover */}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-brand-lime/0 via-brand-lime/5 to-brand-lime/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                    <div className="absolute inset-0 bg-gradient-to-tr from-brand-lime/0 via-brand-lime/10 to-brand-lime/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
                     {/* Logo Image - Brightness 0 Invert ensures logos are White on Dark */}
                     <div className="w-full h-full flex items-center justify-center relative z-10">
@@ -324,14 +309,14 @@ export const Home: React.FC = () => {
                 </div>
               ))}
 
-              {/* Add Client Button */}
+              {/* Add Client Button - Clearly visible */}
               {isAdmin && (
                 <div 
                   onClick={addClientLogo}
-                  className="h-28 md:h-32 flex flex-col items-center justify-center border-2 border-dashed border-gray-700 rounded-lg cursor-pointer hover:border-brand-lime hover:bg-brand-lime/10 transition text-gray-500 hover:text-brand-lime group"
+                  className="h-24 md:h-28 flex flex-col items-center justify-center border-2 border-dashed border-brand-orange/50 rounded-lg cursor-pointer hover:border-brand-lime hover:bg-brand-lime/10 transition text-brand-orange hover:text-brand-lime group"
                 >
-                  <Plus size={32} className="mb-2 group-hover:scale-110 transition" />
-                  <span className="text-xs font-bold uppercase tracking-wider">Add Logo</span>
+                  <Plus size={32} className="mb-2 group-hover:scale-125 transition duration-300" />
+                  <span className="text-xs font-bold uppercase tracking-wider">Add</span>
                 </div>
               )}
             </div>

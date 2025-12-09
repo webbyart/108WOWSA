@@ -1,8 +1,8 @@
-import { SiteContent, Project } from './types';
 
-// IMPORTANT: Replace this URL with your deployed Web App URL from Google Apps Script
-export const GOOGLE_SCRIPT_URL = "REPLACE_WITH_YOUR_DEPLOYED_GOOGLE_SCRIPT_URL"; 
-export const GOOGLE_SHEET_ID = "1gpb9RQDNVmqoWMAacwUX_BNYYKol1DtI_3AF4AvoCyg";
+import { SiteContent, Project, Article } from './types';
+
+// Kept for backward compatibility with Admin.tsx logic, though we use Supabase now
+export const GOOGLE_SCRIPT_URL = "REPLACE_WITH_YOUR_DEPLOYED_GOOGLE_SCRIPT_URL";
 
 export const UI_LABELS = {
   th: {
@@ -32,7 +32,8 @@ export const UI_LABELS = {
     admin_mode: 'โหมดผู้ดูแลระบบ',
     logout: 'ออกจากระบบ',
     login: 'เข้าสู่ระบบ',
-    get_in_touch: 'ติดต่อเรา'
+    get_in_touch: 'ติดต่อเรา',
+    close: 'ปิด'
   },
   en: {
     home: 'Home',
@@ -61,44 +62,17 @@ export const UI_LABELS = {
     admin_mode: 'Admin Mode Active',
     logout: 'Logout',
     login: 'Login',
-    get_in_touch: 'Get in Touch'
+    get_in_touch: 'Get in Touch',
+    close: 'Close'
   }
 };
 
-export const MOCK_PROJECTS: Project[] = [
-  { 
-    id: '1', 
-    title: 'Sport Day 2024 - ABC Corp', 
-    category: 'Sport Day', 
-    imageUrl: 'https://images.unsplash.com/photo-1561484930-998b6a7b22e8?q=80&w=800&auto=format&fit=crop', 
-    description: 'งานกีฬาสีประจำปี บริษัท ABC จำกัด ในธีม Super Hero รวมพนักงานกว่า 500 คน บรรยากาศเต็มไปด้วยความสนุกสนาน' 
-  },
-  { 
-    id: '2', 
-    title: 'Neon Night Party', 
-    category: 'Party', 
-    imageUrl: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=800&auto=format&fit=crop', 
-    description: 'ปาร์ตี้ปีใหม่สุดมันส์ในธีม Neon Glow แสงสีเสียงจัดเต็ม พร้อม DJ ชื่อดัง' 
-  },
-  { 
-    id: '3', 
-    title: 'Team Building @ Huahin', 
-    category: 'Team Building', 
-    imageUrl: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=800&auto=format&fit=crop', 
-    description: 'กิจกรรมสานสัมพันธ์นอกสถานที่ สร้างความสามัคคี ริมหาดหัวหิน' 
-  },
-  { 
-    id: '4', 
-    title: 'Product Launch Carnival', 
-    category: 'Event', 
-    imageUrl: 'https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?q=80&w=800&auto=format&fit=crop', 
-    description: 'เปิดตัวสินค้าใหม่พร้อมซุ้มเกมส์งานวัดกว่า 10 ซุ้ม ผู้ร่วมงานกว่า 1,000 คน' 
-  },
-];
+export const MOCK_PROJECTS: Project[] = []; // Empty default, will load from Supabase
+export const MOCK_ARTICLES: Article[] = []; // Empty default, will load from Supabase
 
 export const DEFAULT_CONTENT: SiteContent = {
   // Global
-  'site_logo': 'https://placehold.co/200x60/bee90d/000000?text=108WOW+LOGO',
+  'site_logo': 'https://scontent.fbkk12-1.fna.fbcdn.net/v/t39.30808-6/596288433_4376497032627821_223548440002380826_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=127cfc&_nc_ohc=-zwKfk6JomIQ7kNvwEwDvaJ&_nc_oc=AdkLul868De9Xq2zVOEcE-D0Pr0PgeOXGu8FAucEhZdUCMUoCfWCKY0LMU4XYGmYKaI&_nc_zt=23&_nc_ht=scontent.fbkk12-1.fna&_nc_gid=wKri6QeCqMaQwtTthEzCrA&oh=00_AfmtM-EWXZ6kMjf8aASa8_abzhxkMnKffRBtKE2B6VAqMQ&oe=693D6D81',
   
   // Header & Footer
   'contact_phone': '089-123-4567',
@@ -123,14 +97,24 @@ export const DEFAULT_CONTENT: SiteContent = {
   'client_subtitle': 'เพราะเรารู้ว่า "ภาพลักษณ์" และ "การบริการ" คือหัวใจของงานอีเว้นท์',
   'client_desc': 'ออแกไนซ์และแบรนด์ชั้นนำกว่า 2,000 ราย วางใจใช้บริการจาก 108WOW เพราะเราเข้าใจดีว่า "ภาพลักษณ์" และ "การบริการ" คือหัวใจของทุกอีเวนต์ เมื่อพูดถึงการสร้างประสบการณ์ที่น่าประทับใจในงานอีเวนต์หรือกิจกรรมการตลาด 108WOW คือชื่อที่แบรนด์และองค์กรชั้นนำเลือกใช้',
   'client_logos': JSON.stringify([
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Xiaomi_logo_%282021-%29.svg/512px-Xiaomi_logo_%282021-%29.svg.png',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Toyota.svg/1200px-Toyota.svg.png',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Fujifilm_logo.svg/1200px-Fujifilm_logo.svg.png',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Mitsubishi-motors_logo.svg/1200px-Mitsubishi-motors_logo.svg.png',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Isuzu_Motors_Logo.svg/1200px-Isuzu_Motors_Logo.svg.png',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Caltex_Logo.svg/1200px-Caltex_Logo.svg.png',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Bangchak_Corporation_logo.svg/1200px-Bangchak_Corporation_logo.svg.png',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Krung_Thai_Bank_logo.svg/1200px-Krung_Thai_Bank_logo.svg.png',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Government_Savings_Bank_of_Thailand_Logo.svg/1200px-Government_Savings_Bank_of_Thailand_Logo.svg.png',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/NXP_Semiconductors_Logo.svg/1200px-NXP_Semiconductors_Logo.svg.png',
     'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/1200px-Logo_NIKE.svg.png',
     'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/1200px-Adidas_Logo.svg.png',
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1200px-Google_%22G%22_Logo.svg.png',
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/800px-Apple_logo_black.svg.png',
     'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/1200px-BMW.svg.png',
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Benz_Logo_2010.svg/1200px-Mercedes-Benz_Logo_2010.svg.png',
     'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/1200px-Netflix_2015_logo.svg.png',
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Facebook_logo_%22square%22.png/800px-Facebook_logo_%22square%22.png'
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/800px-Apple_logo_black.svg.png',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Facebook_logo_%22square%22.png/800px-Facebook_logo_%22square%22.png',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Benz_Logo_2010.svg/1200px-Mercedes-Benz_Logo_2010.svg.png',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1200px-Google_%22G%22_Logo.svg.png'
   ]),
 
   // REALISTIC IMAGES (Unsplash)
@@ -206,40 +190,4 @@ export const DEFAULT_CONTENT: SiteContent = {
   'about_headline_en': 'Meet the 108WOW Team',
   'about_story_en': '108WOW was founded on a passion for creating happiness and smiles through activities. We started as a small team loving fun, growing into a national leader in Sport Days and Parties.',
   'about_mission_en': 'Determined to be the leader in creative, safe, and value-for-money Sport Day and Event organization, creating good memories for every organization.',
-  
-  // Knowledge Articles (Dynamic Array)
-  'knowledge_articles': JSON.stringify([
-    {
-      id: '1',
-      image: 'https://picsum.photos/600/400?random=21',
-      title: '5 ธีมงานกีฬาสีสุดฮิต ปี 2024',
-      title_en: '5 Popular Sport Day Themes in 2024',
-      excerpt: 'รวมธีมงานกีฬาสีบริษัทที่กำลังมาแรง สร้างสีสันและความสนุกแบบฉุดไม่อยู่...',
-      excerpt_en: 'A collection of trending corporate sport day themes to create unstoppable fun...'
-    },
-    {
-      id: '2',
-      image: 'https://picsum.photos/600/400?random=22',
-      title: 'เคล็ดลับจัดงานปาร์ตี้บริษัทยังไง ให้พนักงานประทับใจ',
-      title_en: 'Tips for Organizing Impressive Corporate Parties',
-      excerpt: 'เทคนิคการวางแผนงานปาร์ตี้ให้ไหลลื่น อาหารอร่อย ดนตรีเพราะ และกิจกรรมโดนใจ...',
-      excerpt_en: 'Techniques for planning smooth parties with good food, music, and activities...'
-    },
-    {
-      id: '3',
-      image: 'https://picsum.photos/600/400?random=23',
-      title: 'ทำไม Team Building ถึงสำคัญกับองค์กรยุคใหม่?',
-      title_en: 'Why is Team Building Important?',
-      excerpt: 'การสร้างความสัมพันธ์ในทีมช่วยเพิ่มประสิทธิภาพการทำงานได้อย่างไร มาหาคำตอบกัน...',
-      excerpt_en: 'How does team building improve work efficiency? Let\'s find out...'
-    },
-    {
-      id: '4',
-      image: 'https://picsum.photos/600/400?random=24',
-      title: 'วิธีเลือกเกมส์ให้เหมาะกับจำนวนคนและสถานที่',
-      title_en: 'How to Choose Games for Your Event Size',
-      excerpt: 'แนะนำการเลือกเกมส์สันทนาการให้เหมาะสมกับพื้นที่และจำนวนผู้เข้าร่วมงาน...',
-      excerpt_en: 'Guide to choosing recreation games suitable for your space and number of participants...'
-    }
-  ])
 };

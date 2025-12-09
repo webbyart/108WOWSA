@@ -1,3 +1,4 @@
+
 export interface SiteContent {
   [key: string]: string;
 }
@@ -10,15 +11,20 @@ export interface Project {
   description: string;
 }
 
+export interface Article {
+  id: string;
+  image: string;
+  title: string;
+  title_en?: string;
+  excerpt: string;
+  excerpt_en?: string;
+  details?: string;
+  details_en?: string;
+}
+
 export interface User {
   email: string;
   token: string;
-}
-
-export interface ApiResponse<T> {
-  status: 'success' | 'error';
-  data?: T;
-  message?: string;
 }
 
 export enum PageType {

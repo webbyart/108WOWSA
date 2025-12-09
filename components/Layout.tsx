@@ -81,13 +81,13 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2">
              {/* Admin Editable Logo - Dynamic Image Container */}
-             {/* Uses h-12 to h-16 and max-w logic to ensure any uploaded logo fits reasonably */}
-             <div className="h-12 md:h-16 min-w-[150px] max-w-[300px] relative flex items-center">
+             {/* INCREASED MAX-W and FLEXIBILITY for different aspect ratios */}
+             <div className="h-14 md:h-20 min-w-[150px] max-w-[350px] relative flex items-center">
                <EditableImage 
                   id="site_logo" 
                   alt="108WOW Logo" 
                   className="w-full h-full relative flex items-center" 
-                  imgClassName="object-contain object-left"
+                  imgClassName="object-contain object-left max-h-full max-w-full"
                   defaultSrc="https://placehold.co/200x60/bee90d/000000?text=LOGO"
                 />
              </div>

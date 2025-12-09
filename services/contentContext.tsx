@@ -1,12 +1,15 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { SiteContent, Project } from '../types';
-import { DEFAULT_CONTENT, MOCK_PROJECTS, GOOGLE_SCRIPT_URL } from '../constants';
+import { SiteContent, Project, Article } from '../types';
+import { DEFAULT_CONTENT, MOCK_PROJECTS, MOCK_ARTICLES } from '../constants';
+import { supabase } from '../supabaseClient';
 
 export type Language = 'th' | 'en';
 
 interface ContentContextType {
   content: SiteContent;
   projects: Project[];
+  articles: Article[];
   isAdmin: boolean;
   isLoading: boolean;
   language: Language;
@@ -15,6 +18,10 @@ interface ContentContextType {
   updateContent: (key: string, value: string) => Promise<void>;
   updateProject: (project: Project) => Promise<void>;
   addProject: (project: Project) => Promise<void>;
+  saveArticles: (articles: Article[]) => Promise<void>;
+  addArticle: (article: Article) => Promise<void>;
+  updateArticle: (article: Article) => Promise<void>;
+  deleteArticle: (id: string) => Promise<void>;
   switchLanguage: (lang: Language) => void;
 }
 
@@ -23,41 +30,64 @@ const ContentContext = createContext<ContentContextType | undefined>(undefined);
 export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [content, setContent] = useState<SiteContent>(DEFAULT_CONTENT);
   const [projects, setProjects] = useState<Project[]>(MOCK_PROJECTS);
+  const [articles, setArticles] = useState<Article[]>(MOCK_ARTICLES);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [language, setLanguage] = useState<Language>('th');
 
-  // Initial Fetch (Simulated if no URL provided)
+  // Initial Fetch from Supabase
   useEffect(() => {
-    const fetchData = async () => {
-      if (GOOGLE_SCRIPT_URL === "REPLACE_WITH_YOUR_DEPLOYED_GOOGLE_SCRIPT_URL") {
-        console.warn("GAS URL not configured. Using default data.");
-        return;
-      }
-      
+    const fetchAllData = async () => {
+      setIsLoading(true);
       try {
-        setIsLoading(true);
-        // Fetch Content
-        const resContent = await fetch(`${GOOGLE_SCRIPT_URL}?action=getContent`);
-        const jsonContent = await resContent.json();
-        if (jsonContent.status === 'success') {
-          setContent(prev => ({ ...prev, ...jsonContent.data }));
+        // 1. Fetch Site Content (Key-Value)
+        const { data: contentData } = await supabase
+          .from('site_content')
+          .select('*');
+        
+        if (contentData) {
+          const contentMap: SiteContent = { ...DEFAULT_CONTENT };
+          contentData.forEach((item: any) => {
+            contentMap[item.key] = item.value;
+          });
+          setContent(contentMap);
         }
 
-        // Fetch Projects
-        const resProjects = await fetch(`${GOOGLE_SCRIPT_URL}?action=getProjects`);
-        const jsonProjects = await resProjects.json();
-        if (jsonProjects.status === 'success') {
-          setProjects(jsonProjects.data);
+        // 2. Fetch Projects
+        const { data: projectsData } = await supabase
+          .from('projects')
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (projectsData) {
+          const mappedProjects: Project[] = projectsData.map((p: any) => ({
+            id: p.id,
+            title: p.title,
+            category: p.category,
+            imageUrl: p.image_url,
+            description: p.description
+          }));
+          setProjects(mappedProjects);
         }
+
+        // 3. Fetch Articles
+        const { data: articlesData } = await supabase
+          .from('articles')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (articlesData) {
+          setArticles(articlesData);
+        }
+
       } catch (e) {
-        console.error("Failed to fetch data", e);
+        console.error("Failed to fetch data from Supabase", e);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchData();
+    fetchAllData();
   }, []);
 
   const login = (token: string) => {
@@ -78,30 +108,115 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     // Optimistic Update
     setContent(prev => ({ ...prev, [key]: value }));
 
-    if (GOOGLE_SCRIPT_URL !== "REPLACE_WITH_YOUR_DEPLOYED_GOOGLE_SCRIPT_URL") {
-       try {
-         await fetch(GOOGLE_SCRIPT_URL, {
-           method: 'POST',
-           body: JSON.stringify({ action: 'updateContent', key, value })
-         });
-       } catch (e) {
-         console.error("Failed to save content", e);
-         alert("Failed to save changes to server.");
-       }
+    try {
+      const { error } = await supabase
+        .from('site_content')
+        .upsert({ key, value });
+      
+      if (error) throw error;
+    } catch (e) {
+      console.error("Failed to save content", e);
     }
   };
 
   const updateProject = async (project: Project) => {
+    // Optimistic
     setProjects(prev => prev.map(p => p.id === project.id ? project : p));
+
+    try {
+      const { error } = await supabase
+        .from('projects')
+        .update({
+          title: project.title,
+          category: project.category,
+          image_url: project.imageUrl,
+          description: project.description
+        })
+        .eq('id', project.id);
+        
+      if (error) throw error;
+    } catch (e) {
+       console.error("Failed to update project", e);
+    }
   };
 
   const addProject = async (project: Project) => {
+    // Optimistic (temporary ID)
     setProjects(prev => [project, ...prev]);
-    // In a real app, you would POST to the backend here
+
+    try {
+      const { data, error } = await supabase
+        .from('projects')
+        .insert({
+          title: project.title,
+          category: project.category,
+          image_url: project.imageUrl,
+          description: project.description
+        })
+        .select()
+        .single();
+      
+      if (error) throw error;
+      
+      // Replace temporary ID with real ID from DB
+      if (data) {
+        setProjects(prev => prev.map(p => p.id === project.id ? { ...p, id: data.id } : p));
+      }
+    } catch (e) {
+      console.error("Failed to add project", e);
+    }
+  };
+
+  const addArticle = async (article: Article) => {
+     try {
+       // Remove ID if it's a temp ID or let Supabase generate it
+       const { id, ...articleData } = article;
+       const { data, error } = await supabase.from('articles').insert(articleData).select().single();
+       if(error) throw error;
+       if(data) setArticles(prev => [data, ...prev]);
+     } catch(e) { console.error("Failed to add article", e); }
+  };
+
+  const updateArticle = async (article: Article) => {
+      try {
+        const { error } = await supabase.from('articles').update(article).eq('id', article.id);
+        if(error) throw error;
+        setArticles(prev => prev.map(a => a.id === article.id ? article : a));
+      } catch(e) { console.error("Failed to update article", e); }
+  };
+
+  const deleteArticle = async (id: string) => {
+      try {
+        const { error } = await supabase.from('articles').delete().eq('id', id);
+        if(error) throw error;
+        setArticles(prev => prev.filter(a => a.id !== id));
+      } catch(e) { console.error("Failed to delete article", e); }
+  };
+
+  // Backward compatibility wrapper
+  const saveArticles = async (arts: Article[]) => {
+    setArticles(arts);
   };
 
   return (
-    <ContentContext.Provider value={{ content, projects, isAdmin, isLoading, login, logout, updateContent, updateProject, addProject, language, switchLanguage }}>
+    <ContentContext.Provider value={{ 
+      content, 
+      projects, 
+      articles, 
+      isAdmin, 
+      isLoading, 
+      language,
+      login, 
+      logout, 
+      updateContent, 
+      updateProject, 
+      addProject, 
+      saveArticles,
+      addArticle,
+      updateArticle,
+      deleteArticle,
+      switchLanguage
+    }}>
       {children}
     </ContentContext.Provider>
   );
