@@ -49,7 +49,10 @@ export const EditableText: React.FC<EditableTextProps> = ({
 
   if (isEditing) {
     return (
-      <div className="relative group w-full">
+      <div 
+        className="relative group w-full"
+        onClick={(e) => e.stopPropagation()} // Prevent bubble to parent links
+      >
         {multiline ? (
           <textarea
             className={`w-full p-2 border-2 border-brand-blue rounded bg-white text-black min-h-[100px] z-50 relative ${className}`}
@@ -77,7 +80,7 @@ export const EditableText: React.FC<EditableTextProps> = ({
       <Tag className={className}>{currentValue}</Tag>
       {isAdmin && (
         <button 
-          onClick={(e) => { e.preventDefault(); setIsEditing(true); }} 
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsEditing(true); }} 
           className="absolute top-0 right-0 hidden group-hover:block bg-brand-orange text-white p-1 rounded-full shadow-lg transform translate-x-1/2 -translate-y-1/2 z-10"
         >
           <Edit2 size={12} />
@@ -92,6 +95,7 @@ interface EditableImageProps {
   defaultSrc?: string;
   alt: string;
   className?: string;
+  imgClassName?: string; // New prop for specific image styling
   overrideSrc?: string;
   onSave?: (newSrc: string) => void;
 }
@@ -101,6 +105,7 @@ export const EditableImage: React.FC<EditableImageProps> = ({
   defaultSrc = '', 
   alt, 
   className,
+  imgClassName,
   overrideSrc,
   onSave 
 }) => {
@@ -180,16 +185,23 @@ export const EditableImage: React.FC<EditableImageProps> = ({
 
   return (
     <div className={`relative group ${className}`}>
-      <img src={currentSrc} alt={alt} className={`w-full h-full object-cover ${isAdmin ? 'group-hover:opacity-80 transition-opacity' : ''}`} />
+      {/* Use imgClassName if provided, otherwise default to object-cover */}
+      <img src={currentSrc} alt={alt} className={`w-full h-full ${imgClassName || 'object-cover'} ${isAdmin ? 'group-hover:opacity-80 transition-opacity' : ''}`} />
       
       {isAdmin && (
         <div className="absolute inset-0 hidden group-hover:flex flex-col items-center justify-center bg-black/40 text-white z-10">
           {!isEditing ? (
-             <button onClick={() => setIsEditing(true)} className="bg-brand-orange px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-orange-600 transition shadow-lg">
+             <button 
+               onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsEditing(true); }} 
+               className="bg-brand-orange px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-orange-600 transition shadow-lg"
+             >
                <Edit2 size={16} /> Edit Image
              </button>
           ) : (
-            <div className="bg-white p-4 rounded-lg text-black w-3/4 max-w-sm shadow-2xl animate-fadeIn">
+            <div 
+              className="bg-white p-4 rounded-lg text-black w-3/4 max-w-sm shadow-2xl animate-fadeIn"
+              onClick={(e) => e.stopPropagation()} // Stop propagation here so clicking form doesn't trigger parent links
+            >
                <h4 className="font-bold mb-2 text-brand-blue">Update Image</h4>
                <p className="text-xs text-gray-500 mb-2">Paste URL or Upload File</p>
                <input 

@@ -86,7 +86,8 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                <EditableImage 
                   id="site_logo" 
                   alt="108WOW Logo" 
-                  className="w-full h-full object-contain object-left"
+                  className="w-full h-full relative flex items-center" 
+                  imgClassName="object-contain object-left"
                   defaultSrc="https://placehold.co/200x60/bee90d/000000?text=LOGO"
                 />
              </div>
