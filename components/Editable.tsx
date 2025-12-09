@@ -106,6 +106,7 @@ export const EditableImage: React.FC<EditableImageProps> = ({
 }) => {
   const { content, isAdmin, updateContent } = useContent();
   const [isEditing, setIsEditing] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   
   const currentSrc = overrideSrc !== undefined ? overrideSrc : (content[id] || defaultSrc);
   const [editSrc, setEditSrc] = useState(currentSrc);
@@ -114,14 +115,57 @@ export const EditableImage: React.FC<EditableImageProps> = ({
     setEditSrc(currentSrc);
   }, [currentSrc]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Helper to resize image
+  const resizeImage = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 800; // Limit width to 800px to keep string size manageable
+          const MAX_HEIGHT = 800;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', 0.85)); // Compress
+        };
+        img.onerror = reject;
+      };
+      reader.onerror = reject;
+    });
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setEditSrc(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      setIsProcessing(true);
+      try {
+        const resizedBase64 = await resizeImage(file);
+        setEditSrc(resizedBase64);
+      } catch (error) {
+        console.error("Error resizing image", error);
+        alert("Failed to process image.");
+      } finally {
+        setIsProcessing(false);
+      }
     }
   };
 
@@ -141,13 +185,13 @@ export const EditableImage: React.FC<EditableImageProps> = ({
       {isAdmin && (
         <div className="absolute inset-0 hidden group-hover:flex flex-col items-center justify-center bg-black/40 text-white z-10">
           {!isEditing ? (
-             <button onClick={() => setIsEditing(true)} className="bg-brand-orange px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-orange-600 transition">
+             <button onClick={() => setIsEditing(true)} className="bg-brand-orange px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-orange-600 transition shadow-lg">
                <Edit2 size={16} /> Edit Image
              </button>
           ) : (
-            <div className="bg-white p-4 rounded-lg text-black w-3/4 max-w-sm shadow-2xl">
+            <div className="bg-white p-4 rounded-lg text-black w-3/4 max-w-sm shadow-2xl animate-fadeIn">
                <h4 className="font-bold mb-2 text-brand-blue">Update Image</h4>
-               <p className="text-xs text-gray-500 mb-2">Paste URL or Upload</p>
+               <p className="text-xs text-gray-500 mb-2">Paste URL or Upload File</p>
                <input 
                   type="text" 
                   placeholder="Image URL..." 
@@ -155,13 +199,14 @@ export const EditableImage: React.FC<EditableImageProps> = ({
                   onChange={(e) => setEditSrc(e.target.value)}
                   className="w-full border p-2 rounded mb-3 text-sm focus:border-brand-orange outline-none"
                />
-               <div className="flex items-center gap-2 mb-4 bg-gray-50 p-2 rounded border border-dashed">
+               <div className="flex items-center gap-2 mb-4 bg-gray-50 p-2 rounded border border-dashed hover:bg-gray-100 transition">
                   <Upload size={14} className="text-gray-400"/>
-                  <input type="file" accept="image/*" onChange={handleFileChange} className="text-sm w-full text-gray-500" />
+                  <input type="file" accept="image/*" onChange={handleFileChange} className="text-sm w-full text-gray-500" disabled={isProcessing} />
                </div>
+               {isProcessing && <p className="text-xs text-brand-orange mb-2 text-center animate-pulse">Processing image...</p>}
                <div className="flex justify-end gap-2">
-                 <button onClick={() => setIsEditing(false)} className="px-3 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300">Cancel</button>
-                 <button onClick={handleSave} className="px-3 py-1 text-sm bg-brand-orange text-white rounded hover:bg-orange-600 font-bold">Save</button>
+                 <button onClick={() => setIsEditing(false)} className="px-3 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300 transition">Cancel</button>
+                 <button onClick={handleSave} disabled={isProcessing} className="px-3 py-1 text-sm bg-brand-orange text-white rounded hover:bg-orange-600 font-bold transition">Save</button>
                </div>
             </div>
           )}

@@ -80,8 +80,9 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         {/* Navbar */}
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2">
-             {/* Admin Editable Logo - Dynamic Image */}
-             <div className="h-12 md:h-16 w-auto max-w-[200px] md:max-w-[280px] relative flex items-center">
+             {/* Admin Editable Logo - Dynamic Image Container */}
+             {/* Uses h-12 to h-16 and max-w logic to ensure any uploaded logo fits reasonably */}
+             <div className="h-12 md:h-16 min-w-[150px] max-w-[300px] relative flex items-center">
                <EditableImage 
                   id="site_logo" 
                   alt="108WOW Logo" 
